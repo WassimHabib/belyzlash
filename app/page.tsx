@@ -1,6 +1,8 @@
 import { HeroSection } from "@/components/home/hero-section";
+import { MarqueeBanner } from "@/components/home/marquee-banner";
 import { BenefitsBar } from "@/components/home/benefits-bar";
 import { FeaturedProducts } from "@/components/home/featured-products";
+import { StatsSection } from "@/components/home/stats-section";
 import { BrandBanner } from "@/components/home/brand-banner";
 import { Testimonials } from "@/components/home/testimonials";
 import { FormationsSection } from "@/components/home/formations-section";
@@ -18,8 +20,10 @@ export default async function Home() {
   return (
     <main>
       <HeroSection />
+      <MarqueeBanner />
       <BenefitsBar />
       <FeaturedProducts products={products} />
+      <StatsSection />
       <BrandBanner />
       <Testimonials />
       <FormationsSection />

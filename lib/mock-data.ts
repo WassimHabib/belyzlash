@@ -12,10 +12,10 @@ export const mockProducts: Product[] = [
       "<p>Manteau en cachemire d'exception, coupe droite et elegante.</p>",
     short_description: "Cachemire, coupe droite",
     images: [
-      { id: 1, src: "/placeholder/coat-1.jpg", alt: "Manteau cachemire noir" },
+      { id: 1, src: "/placeholder/coat-1.svg", alt: "Manteau cachemire noir" },
       {
         id: 2,
-        src: "/placeholder/coat-2.jpg",
+        src: "/placeholder/coat-2.svg",
         alt: "Manteau cachemire noir dos",
       },
     ],
@@ -38,7 +38,7 @@ export const mockProducts: Product[] = [
       "<p>Robe fluide en soie naturelle, tombee impeccable.</p>",
     short_description: "Soie naturelle, coupe fluide",
     images: [
-      { id: 3, src: "/placeholder/dress-1.jpg", alt: "Robe soie ivoire" },
+      { id: 3, src: "/placeholder/dress-1.svg", alt: "Robe soie ivoire" },
     ],
     attributes: [
       { id: 1, name: "Taille", options: ["XS", "S", "M", "L"] },
@@ -57,7 +57,7 @@ export const mockProducts: Product[] = [
     description: "<p>Pantalon en lin leger, coupe decontractee.</p>",
     short_description: "Lin, coupe decontractee",
     images: [
-      { id: 4, src: "/placeholder/pants-1.jpg", alt: "Pantalon lin beige" },
+      { id: 4, src: "/placeholder/pants-1.svg", alt: "Pantalon lin beige" },
     ],
     attributes: [
       { id: 1, name: "Taille", options: ["S", "M", "L", "XL"] },
@@ -76,7 +76,7 @@ export const mockProducts: Product[] = [
     description: "<p>Chemise en coton egyptien, coupe ajustee.</p>",
     short_description: "Coton egyptien, coupe ajustee",
     images: [
-      { id: 5, src: "/placeholder/shirt-1.jpg", alt: "Chemise coton blanc" },
+      { id: 5, src: "/placeholder/shirt-1.svg", alt: "Chemise coton blanc" },
     ],
     attributes: [
       { id: 1, name: "Taille", options: ["XS", "S", "M", "L", "XL"] },

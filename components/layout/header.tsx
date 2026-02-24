@@ -10,24 +10,30 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-brand-green text-brand-cream">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-brand-green/95 backdrop-blur-sm text-brand-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link href="/" className="font-serif text-2xl sm:text-3xl tracking-wide">
-            belyzlash
+            Belyz<span className="text-brand-gold">Lash</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
-            <Link href="/shop" className="hover:text-brand-gold transition-colors">
-              Shop
+          <nav className="hidden lg:flex items-center gap-8 text-xs tracking-[0.2em] uppercase">
+            <Link href="/shop" className="hover:text-brand-gold transition-colors duration-300">
+              Nos Produits
+            </Link>
+            <Link href="#formations" className="hover:text-brand-gold transition-colors duration-300">
+              Formations
+            </Link>
+            <Link href="mailto:lash.belyz@gmail.com" className="hover:text-brand-gold transition-colors duration-300">
+              Contact
             </Link>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <Link
               href="/cart"
               aria-label="Panier"
-              className="relative hover:text-brand-gold transition-colors"
+              className="relative hover:text-brand-gold transition-colors duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +41,7 @@ export function Header() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -44,14 +50,14 @@ export function Header() {
                 />
               </svg>
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-brand-gold text-brand-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                <span className="absolute -top-2 -right-2 bg-brand-gold text-brand-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-semibold">
                   {totalItems}
                 </span>
               )}
             </Link>
 
             <button
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setMenuOpen(true)}
               aria-label="Menu"
             >

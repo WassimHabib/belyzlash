@@ -14,12 +14,13 @@ function renderHeader() {
 describe("Header", () => {
   it("renders the brand name", () => {
     renderHeader();
-    expect(screen.getByText("belyzlash")).toBeInTheDocument();
+    expect(screen.getByText(/Belyz/)).toBeInTheDocument();
+    expect(screen.getByText("Lash")).toBeInTheDocument();
   });
 
   it("renders navigation links", () => {
     renderHeader();
-    expect(screen.getByRole("link", { name: /shop/i })).toHaveAttribute("href", "/shop");
+    expect(screen.getByRole("link", { name: /nos produits/i })).toHaveAttribute("href", "/shop");
   });
 
   it("renders cart link with item count", () => {

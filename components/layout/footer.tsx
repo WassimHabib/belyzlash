@@ -160,9 +160,20 @@ export function Footer() {
             <p className="text-[11px] text-brand-cream/30 tracking-wide">
               &copy; {new Date().getFullYear()} BelyzLash. Tous droits reserves.
             </p>
-            <p className="text-[11px] text-brand-cream/20 tracking-wide">
-              Fait avec passion pour les passionnees
-            </p>
+            <a
+              href="https://wevlap.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] hover:border-brand-gold/40 hover:bg-brand-gold/[0.12] transition-all duration-300"
+            >
+              <span className="text-[11px] text-brand-cream/40 tracking-wide">Concu par</span>
+              <span className="text-xs font-bold tracking-[0.15em] uppercase text-brand-gold group-hover:text-brand-gold transition-colors duration-300">
+                Wevlap
+              </span>
+              <svg className="w-3 h-3 text-brand-gold/50 group-hover:text-brand-gold group-hover:translate-x-0.5 transition-all duration-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>

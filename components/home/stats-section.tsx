@@ -34,7 +34,7 @@ export function StatsSection() {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} className="relative py-20 sm:py-24 bg-brand-green grain overflow-hidden">
+    <section ref={ref} className="relative py-14 sm:py-16 bg-brand-green grain overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-brand-gold/5 blur-[120px]" />

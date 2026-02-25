@@ -10,7 +10,8 @@ const benefits = [
       </svg>
     ),
     title: "Paiement Securise",
-    description: "3x ou 4x sans frais",
+    description: "3x ou 4x sans frais disponible sur toutes vos commandes",
+    badge: "SSL",
   },
   {
     icon: (
@@ -19,7 +20,8 @@ const benefits = [
       </svg>
     ),
     title: "Livraison Rapide",
-    description: "24h - 72h des 4,50\u20ac",
+    description: "Expedition sous 24h a 72h, directement chez vous des 4,50\u20ac",
+    badge: "24H",
   },
   {
     icon: (
@@ -29,7 +31,8 @@ const benefits = [
       </svg>
     ),
     title: "Click & Collect",
-    description: "Prete en 2h",
+    description: "Commandez en ligne et recuperez votre colis pret en 2 heures",
+    badge: "2H",
   },
   {
     icon: (
@@ -38,7 +41,8 @@ const benefits = [
       </svg>
     ),
     title: "Qualite Pro",
-    description: "Produits haut de gamme",
+    description: "Produits haut de gamme selectionnes et testes par des professionnelles",
+    badge: "PRO",
   },
 ];
 
@@ -46,24 +50,68 @@ export function BenefitsBar() {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} className="py-16 sm:py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
+    <section ref={ref} className="relative py-14 sm:py-16 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-cream via-white to-brand-cream" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
+
+      {/* Decorative orbs */}
+      <div className="absolute -top-20 left-1/4 w-80 h-80 rounded-full bg-brand-gold/[0.03] blur-[100px]" />
+      <div className="absolute -bottom-20 right-1/4 w-80 h-80 rounded-full bg-brand-green/[0.03] blur-[100px]" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section header */}
+        <div className={`text-center mb-10 ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}>
+          <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 font-bold">
+            Nos Engagements
+          </p>
+          <h2 className="font-serif text-4xl sm:text-5xl text-brand-green font-bold">
+            Pourquoi nous faire <span className="text-gradient-gold">confiance</span>
+          </h2>
+        </div>
+
+        {/* Benefits grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {benefits.map((benefit, i) => (
             <div
               key={benefit.title}
-              className={`group flex flex-col items-center text-center gap-4 p-6 rounded-2xl transition-all duration-500 hover:bg-brand-beige/30 ${
+              className={`group relative rounded-3xl bg-white border border-brand-beige/60 p-8 transition-all duration-500 hover:border-brand-gold/40 hover:shadow-[0_20px_60px_-12px_rgba(198,168,107,0.15)] hover:-translate-y-2 ${
                 isVisible ? "animate-fade-in-up" : "opacity-0"
               }`}
               style={{ animationDelay: `${i * 0.12}s` }}
             >
-              <div className="w-14 h-14 rounded-2xl bg-brand-green/5 flex items-center justify-center text-brand-gold group-hover:bg-brand-green/10 group-hover:scale-110 transition-all duration-500">
-                {benefit.icon}
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden rounded-tr-3xl">
+                <div className="absolute top-0 right-0 w-[1px] h-12 bg-gradient-to-b from-brand-gold/40 to-transparent group-hover:h-16 transition-all duration-500" />
+                <div className="absolute top-0 right-0 w-12 h-[1px] bg-gradient-to-l from-brand-gold/40 to-transparent group-hover:w-16 transition-all duration-500" />
               </div>
-              <div>
-                <p className="font-medium text-brand-black text-sm tracking-wide">{benefit.title}</p>
-                <p className="text-brand-black/40 text-xs mt-1.5">{benefit.description}</p>
+
+              {/* Badge */}
+              <div className="absolute top-5 right-5">
+                <span className="text-[9px] tracking-[0.2em] font-bold text-brand-gold/40 group-hover:text-brand-gold/70 transition-colors duration-500">
+                  {benefit.badge}
+                </span>
               </div>
+
+              {/* Icon */}
+              <div className="relative mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-brand-green flex items-center justify-center text-brand-gold shadow-lg shadow-brand-green/20 group-hover:shadow-brand-green/30 group-hover:scale-105 transition-all duration-500">
+                  {benefit.icon}
+                </div>
+                {/* Glow behind icon */}
+                <div className="absolute inset-0 w-16 h-16 rounded-2xl bg-brand-gold/0 group-hover:bg-brand-gold/20 blur-xl transition-all duration-700" />
+              </div>
+
+              {/* Text */}
+              <h3 className="font-semibold text-brand-green text-base tracking-wide mb-2">
+                {benefit.title}
+              </h3>
+              <p className="text-brand-black/40 text-sm leading-relaxed">
+                {benefit.description}
+              </p>
+
+              {/* Bottom line accent */}
+              <div className="mt-6 w-0 group-hover:w-full h-[2px] rounded-full bg-gradient-to-r from-brand-gold to-brand-gold/30 transition-all duration-700" />
             </div>
           ))}
         </div>

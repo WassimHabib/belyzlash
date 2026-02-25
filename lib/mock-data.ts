@@ -11,8 +11,8 @@ export const mockProducts: Product[] = [
     description: "<p>Le kit ultime pour maitriser la technique du volume russe. Contient des cils en soie premium de differentes courbures (C, D, L), une colle professionnelle longue tenue, une pince a volume, un micro-brush set et un guide technique.</p>",
     short_description: "Kit pro volume russe avec cils, colle et accessoires",
     images: [
-      { id: 1, src: "/placeholder/kit-volume.svg", alt: "Kit Complet Volume Russe" },
-      { id: 2, src: "/placeholder/kit-volume-2.svg", alt: "Kit Volume Russe contenu" },
+      { id: 1, src: "/images/products/kit-volume.jpg", alt: "Kit Complet Volume Russe" },
+      { id: 2, src: "/images/products/cils-glamour.jpg", alt: "Kit Volume Russe contenu" },
     ],
     attributes: [
       { id: 1, name: "Courbure", options: ["C", "D", "L"] },
@@ -31,7 +31,7 @@ export const mockProducts: Product[] = [
     description: "<p>Cils en soie haut de gamme pour un look naturel et subtil. Ultra-legers, souples et confortables. Duree de vie prolongee grace a notre fibre exclusive. Disponibles en plusieurs epaisseurs et longueurs.</p>",
     short_description: "Cils en soie ultra-legers pour un regard naturel",
     images: [
-      { id: 3, src: "/placeholder/cils-naturel.svg", alt: "Cils Soie Look Naturel" },
+      { id: 3, src: "/images/products/cils-naturel.jpg", alt: "Cils Soie Look Naturel" },
     ],
     attributes: [
       { id: 1, name: "Epaisseur", options: ["0.05mm", "0.07mm", "0.10mm"] },
@@ -51,7 +51,7 @@ export const mockProducts: Product[] = [
     description: "<p>Extensions de cils pre-faites en eventail 3D pour un look glamour intense. Gain de temps garanti : pose rapide sans sacrifier le volume. Fibre synthetique premium, noir intense.</p>",
     short_description: "Extensions pre-faites 3D pour un volume intense",
     images: [
-      { id: 4, src: "/placeholder/cils-glamour.svg", alt: "Cils Volume 3D Glamour" },
+      { id: 4, src: "/images/products/cils-glamour.jpg", alt: "Cils Volume 3D Glamour" },
     ],
     attributes: [
       { id: 1, name: "Courbure", options: ["C", "D", "DD"] },
@@ -71,7 +71,7 @@ export const mockProducts: Product[] = [
     description: "<p>Colle professionnelle a sechage rapide (1-2 secondes). Tenue jusqu'a 6 semaines. Formulee pour minimiser les irritations. Fonctionne dans toutes les conditions d'humidite.</p>",
     short_description: "Colle pro sechage rapide, tenue 6 semaines",
     images: [
-      { id: 5, src: "/placeholder/colle-pro.svg", alt: "Colle Pro Longue Tenue" },
+      { id: 5, src: "/images/products/colle-pro.jpg", alt: "Colle Pro Longue Tenue" },
     ],
     attributes: [
       { id: 1, name: "Volume", options: ["5ml", "10ml"] },
@@ -90,7 +90,7 @@ export const mockProducts: Product[] = [
     description: "<p>Pince en acier inoxydable japonais de precision, specialement concue pour la creation d'eventails de volume. Grip anti-fatigue pour les longues sessions. Pointe ultra-fine et parfaitement alignee.</p>",
     short_description: "Pince acier japonais pour technique volume",
     images: [
-      { id: 6, src: "/placeholder/pince-volume.svg", alt: "Pince Volume Ergonomique" },
+      { id: 6, src: "/images/products/pince-volume.jpg", alt: "Pince Volume Ergonomique" },
     ],
     attributes: [],
     variations: [],
@@ -107,7 +107,7 @@ export const mockProducts: Product[] = [
     description: "<p>Notre gamme Optimal pour les techniciennes qui veulent le meilleur. Cils ultra-fins 0.03mm permettant des bouquets de 10 a 16 brins. Noir profond, courbure parfaite, memoire de forme exceptionnelle.</p>",
     short_description: "Cils ultra-fins 0.03mm pour mega volume spectaculaire",
     images: [
-      { id: 7, src: "/placeholder/cils-optimal.svg", alt: "Cils Mega Volume Optimal" },
+      { id: 7, src: "/images/products/cils-optimal.jpg", alt: "Cils Mega Volume Optimal" },
     ],
     attributes: [
       { id: 1, name: "Courbure", options: ["C", "D", "L", "M"] },

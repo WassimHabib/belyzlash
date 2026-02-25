@@ -1,39 +1,76 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { MobileMenu } from "./mobile-menu";
+
+const navLinks = [
+  { label: "Nos Produits", href: "/shop" },
+  { label: "Formations", href: "#formations" },
+  { label: "Contact", href: "mailto:lash.belyz@gmail.com" },
+];
 
 export function Header() {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-brand-green/95 backdrop-blur-sm text-brand-cream">
+    <header
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+        scrolled
+          ? "bg-brand-green/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+          : "bg-transparent"
+      }`}
+    >
+      {/* Top accent line */}
+      <div
+        className={`w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent transition-opacity duration-500 ${
+          scrolled ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          <Link href="/" className="font-serif text-2xl sm:text-3xl tracking-wide">
-            Belyz<span className="text-brand-gold">Lash</span>
+        <div
+          className={`flex items-center justify-between transition-all duration-500 ${
+            scrolled ? "h-16" : "h-20 sm:h-24"
+          }`}
+        >
+          {/* Logo */}
+          <Link href="/" className="group relative font-serif text-2xl sm:text-3xl tracking-wide text-brand-cream">
+            Belyz<span className="text-brand-gold group-hover:text-brand-cream transition-colors duration-300">Lash</span>
+            <span className="absolute -bottom-1 left-0 w-0 group-hover:w-full h-px bg-gradient-to-r from-brand-gold to-transparent transition-all duration-500" />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8 text-xs tracking-[0.2em] uppercase">
-            <Link href="/shop" className="hover:text-brand-gold transition-colors duration-300">
-              Nos Produits
-            </Link>
-            <Link href="#formations" className="hover:text-brand-gold transition-colors duration-300">
-              Formations
-            </Link>
-            <Link href="mailto:lash.belyz@gmail.com" className="hover:text-brand-gold transition-colors duration-300">
-              Contact
-            </Link>
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="relative px-5 py-2 text-[11px] tracking-[0.2em] uppercase text-brand-cream/70 hover:text-brand-cream transition-all duration-300 group"
+              >
+                {link.label}
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-5 h-px bg-brand-gold transition-all duration-300" />
+              </Link>
+            ))}
           </nav>
 
-          <div className="flex items-center gap-5">
+          {/* Right actions */}
+          <div className="flex items-center gap-2">
+            {/* Cart */}
             <Link
               href="/cart"
               aria-label="Panier"
-              className="relative hover:text-brand-gold transition-colors duration-300"
+              className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +78,7 @@ export function Header() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-5 h-5"
+                className="w-[18px] h-[18px]"
               >
                 <path
                   strokeLinecap="round"
@@ -50,14 +87,15 @@ export function Header() {
                 />
               </svg>
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-brand-gold text-brand-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                <span className="absolute top-0.5 right-0.5 bg-brand-gold text-brand-black text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold shadow-lg animate-fade-in-scale">
                   {totalItems}
                 </span>
               )}
             </Link>
 
+            {/* Mobile menu button */}
             <button
-              className="lg:hidden"
+              className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
               onClick={() => setMenuOpen(true)}
               aria-label="Menu"
             >
@@ -67,13 +105,9 @@ export function Header() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-5 h-5"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
           </div>

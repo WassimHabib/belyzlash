@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getProducts, getCategories } from "@/lib/woocommerce";
+import { getProducts, getCategories } from "@/lib/shopify";
 import { mockProducts, mockCategories } from "@/lib/mock-data";
 import { ProductGrid } from "@/components/shop/product-grid";
 import { Filters } from "@/components/shop/filters";

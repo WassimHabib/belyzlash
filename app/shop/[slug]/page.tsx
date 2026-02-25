@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProducts } from "@/lib/woocommerce";
+import { getProductBySlug, getProducts } from "@/lib/shopify";
 import { mockProducts } from "@/lib/mock-data";
 import { ImageGallery } from "@/components/product/image-gallery";
 import { ProductInfo } from "@/components/product/product-info";

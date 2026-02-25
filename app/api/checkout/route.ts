@@ -1,24 +1,33 @@
 import { NextResponse } from "next/server";
-import { createOrder } from "@/lib/woocommerce";
+import { createCheckout } from "@/lib/shopify";
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  if (!body.billing || !body.billing.email) {
+    if (!body.items || body.items.length === 0) {
+      return NextResponse.json(
+        { error: "Items required" },
+        { status: 400 }
+      );
+    }
+
+    const checkout = await createCheckout(
+      body.items.map((item: { variantId: string; quantity: number }) => ({
+        variantId: item.variantId,
+        quantity: item.quantity,
+      }))
+    );
+
+    return NextResponse.json({
+      checkoutUrl: checkout.checkoutUrl,
+      checkoutId: checkout.id,
+    });
+  } catch (error) {
+    console.error("Checkout error:", error);
     return NextResponse.json(
-      { error: "Billing info required" },
-      { status: 400 }
+      { error: "Failed to create checkout" },
+      { status: 500 }
     );
   }
-
-  const order = await createOrder({
-    payment_method: "stripe",
-    payment_method_title: "Carte bancaire",
-    set_paid: false,
-    billing: body.billing,
-    shipping: body.billing,
-    line_items: body.items,
-  });
-
-  return NextResponse.json({ orderId: order.id });
 }

@@ -51,7 +51,9 @@ export function BrandBanner() {
   return (
     <section ref={ref} className="relative py-16 sm:py-20 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-brand-cream" />
+      <div className="absolute inset-0 bg-white" />
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#EDF4F0] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#EDF4F0] to-transparent" />
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent" />

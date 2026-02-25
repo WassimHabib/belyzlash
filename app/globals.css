@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-green: #1F3A34;
-  --color-brand-cream: #F4F2EE;
-  --color-brand-beige: #D8CFC6;
+  --color-brand-green: #22372B;
+  --color-brand-cream: #F7FBF9;
+  --color-brand-beige: #7F9C90;
   --color-brand-black: #0E0E0E;
-  --color-brand-gold: #C6A86B;
+  --color-brand-gold: #96C9AD;
 
   --font-serif: var(--font-playfair), serif;
   --font-sans: var(--font-inter), sans-serif;
@@ -14,6 +14,11 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Safe area for mobile bottom bars (iPhone notch) */
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
 /* Grain texture overlay for luxury feel */
@@ -141,7 +146,7 @@ html {
 
 /* Text gradient */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #C6A86B 0%, #E8D5A3 50%, #C6A86B 100%);
+  background: linear-gradient(135deg, #96C9AD 0%, #B8DFC9 50%, #96C9AD 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -168,7 +173,7 @@ html {
 }
 .card-hover:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px -12px rgba(31, 58, 52, 0.15);
+  box-shadow: 0 20px 40px -12px rgba(34, 55, 43, 0.15);
 }
 
 /* Animated underline */

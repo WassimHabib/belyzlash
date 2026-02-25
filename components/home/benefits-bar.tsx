@@ -52,8 +52,9 @@ export function BenefitsBar() {
   return (
     <section ref={ref} className="relative py-14 sm:py-16 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-cream via-white to-brand-cream" />
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
+      <div className="absolute inset-0 bg-white" />
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#EDF4F0] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#EDF4F0] to-transparent" />
 
       {/* Decorative orbs */}
       <div className="absolute -top-20 left-1/4 w-80 h-80 rounded-full bg-brand-gold/[0.03] blur-[100px]" />

@@ -53,14 +53,14 @@ export function CartItem({ item, index }: { item: CartItemType; index: number })
           <div className="flex items-center rounded-full border border-brand-beige/60 bg-white overflow-hidden">
             <button
               onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}
-              className="w-9 h-9 flex items-center justify-center text-brand-black/40 hover:text-brand-green hover:bg-brand-beige/20 transition-all duration-300 text-sm"
+              className="w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-brand-black/40 hover:text-brand-green hover:bg-brand-beige/20 active:bg-brand-beige/30 transition-all duration-300 text-base sm:text-sm"
             >
               -
             </button>
-            <span className="w-8 text-center text-sm font-medium text-brand-green">{item.quantity}</span>
+            <span className="w-9 sm:w-8 text-center text-sm font-medium text-brand-green">{item.quantity}</span>
             <button
               onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}
-              className="w-9 h-9 flex items-center justify-center text-brand-black/40 hover:text-brand-green hover:bg-brand-beige/20 transition-all duration-300 text-sm"
+              className="w-10 h-10 sm:w-9 sm:h-9 flex items-center justify-center text-brand-black/40 hover:text-brand-green hover:bg-brand-beige/20 active:bg-brand-beige/30 transition-all duration-300 text-base sm:text-sm"
             >
               +
             </button>

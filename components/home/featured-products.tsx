@@ -98,8 +98,9 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
   return (
     <section ref={ref} className="relative py-14 sm:py-20 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-cream via-white/50 to-brand-cream" />
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-beige to-transparent" />
+      <div className="absolute inset-0 bg-white" />
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#EDF4F0] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#EDF4F0] to-transparent" />
 
       {/* Decorative */}
       <div className="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full bg-brand-gold/[0.02] blur-[120px]" />

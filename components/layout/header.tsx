@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -8,6 +9,7 @@ import { MobileMenu } from "./mobile-menu";
 
 const navLinks = [
   { label: "Nos Produits", href: "/shop" },
+  { label: "Ambassadrice", href: "/ambassadrice" },
   { label: "Formations", href: "#formations" },
   { label: "Contact", href: "mailto:lash.belyz@gmail.com" },
 ];
@@ -47,9 +49,15 @@ export function Header() {
           }`}
         >
           {/* Logo */}
-          <Link href="/" className="group relative font-serif text-2xl sm:text-3xl tracking-wide text-brand-cream">
-            Belyz<span className="text-brand-gold group-hover:text-brand-cream transition-colors duration-300">Lash</span>
-            <span className="absolute -bottom-1 left-0 w-0 group-hover:w-full h-px bg-gradient-to-r from-brand-gold to-transparent transition-all duration-500" />
+          <Link href="/" className="relative flex-shrink-0">
+            <Image
+              src="/images/logo/Belyzlashlogo2-Blanc.png"
+              alt="BelyzLash"
+              width={160}
+              height={40}
+              className={`transition-all duration-500 ${scrolled ? "h-20 sm:h-24 w-auto" : "h-20 sm:h-[12rem] w-auto"}`}
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}

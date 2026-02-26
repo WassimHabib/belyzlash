@@ -12,9 +12,10 @@ interface MobileMenuProps {
 const baseLinks = [
   { label: "Accueil", href: "/", number: "01" },
   { label: "Nos Produits", href: "/shop", number: "02" },
-  { label: "Formations", href: "#formations", number: "03" },
-  { label: "Contact", href: "mailto:lash.belyz@gmail.com", number: "04" },
-  { label: "Panier", href: "/cart", number: "05" },
+  { label: "Ambassadrice", href: "/ambassadrice", number: "03" },
+  { label: "Formations", href: "#formations", number: "04" },
+  { label: "Contact", href: "mailto:lash.belyz@gmail.com", number: "05" },
+  { label: "Panier", href: "/cart", number: "06" },
 ];
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
@@ -23,8 +24,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const navLinks = [
     ...baseLinks,
     user
-      ? { label: "Mon Compte", href: "/account", number: "06" }
-      : { label: "Se Connecter", href: "/login", number: "06" },
+      ? { label: "Mon Compte", href: "/account", number: "07" }
+      : { label: "Se Connecter", href: "/login", number: "07" },
   ];
 
   useEffect(() => {

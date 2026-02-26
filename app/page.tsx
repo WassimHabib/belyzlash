@@ -5,6 +5,7 @@ import { FeaturedProducts } from "@/components/home/featured-products";
 import { StatsSection } from "@/components/home/stats-section";
 import { BrandBanner } from "@/components/home/brand-banner";
 import { Testimonials } from "@/components/home/testimonials";
+import { AmbassadriceSection } from "@/components/home/ambassadrice-section";
 import { FormationsSection } from "@/components/home/formations-section";
 import { getProducts } from "@/lib/shopify";
 import { mockProducts } from "@/lib/mock-data";
@@ -26,6 +27,7 @@ export default async function Home() {
       <StatsSection />
       <BrandBanner />
       <Testimonials />
+      <AmbassadriceSection />
       <FormationsSection />
     </main>
   );

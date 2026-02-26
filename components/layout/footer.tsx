@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const navigation = [
   { label: "Nos Produits", href: "/shop" },
@@ -57,10 +58,16 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-4">
-            <Link href="/" className="inline-block font-serif text-3xl tracking-wide text-brand-cream">
-              Belyz<span className="text-brand-gold">Lash</span>
+            <Link href="/" className="inline-block -ml-8">
+              <Image
+                src="/images/logo/Belyzlashlogo2-Blanc.png"
+                alt="BelyzLash"
+                width={320}
+                height={90}
+                className="h-[10rem] w-auto -my-8"
+              />
             </Link>
-            <p className="mt-4 text-sm text-brand-cream/50 leading-relaxed max-w-xs">
+            <p className="-mt-6 text-sm text-brand-cream/50 leading-relaxed max-w-xs">
               Specialisee dans les produits professionnels pour extension de cils. Qualite, passion et excellence au service de votre art.
             </p>
             {/* Social */}

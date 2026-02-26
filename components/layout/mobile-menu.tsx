@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { useAuth } from "@/components/auth/auth-provider";
 
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
 }
 
-const navLinks = [
+const baseLinks = [
   { label: "Accueil", href: "/", number: "01" },
   { label: "Nos Produits", href: "/shop", number: "02" },
   { label: "Formations", href: "#formations", number: "03" },
@@ -17,6 +18,15 @@ const navLinks = [
 ];
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const { user } = useAuth();
+
+  const navLinks = [
+    ...baseLinks,
+    user
+      ? { label: "Mon Compte", href: "/account", number: "06" }
+      : { label: "Se Connecter", href: "/login", number: "06" },
+  ];
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";

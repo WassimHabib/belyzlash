@@ -1,14 +1,14 @@
-import { Product, ProductCategory } from "./types";
+import { Product, ProductCategory, ShopifyCustomer, AuthUser, ShopifyOrder, ShopifyOrderLineItem, ShopifyMailingAddress, ShopifyAddressInput } from "./types";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN!;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
 
 async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
-  const res = await fetch(`https://${domain}/api/2024-01/graphql.json`, {
+  const res = await fetch(`https://${domain}/api/2025-10/graphql.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": storefrontToken,
+      "Shopify-Storefront-Private-Token": storefrontToken,
     },
     body: JSON.stringify({ query, variables }),
     next: { revalidate: 60 },
@@ -244,4 +244,411 @@ export async function createCheckout(
     checkoutUrl: checkout.webUrl,
     id: checkout.id,
   };
+}
+
+// ------- Mutations (no cache) -------
+
+async function shopifyMutate<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+  const res = await fetch(`https://${domain}/api/2025-10/graphql.json`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Shopify-Storefront-Private-Token": storefrontToken,
+    },
+    body: JSON.stringify({ query, variables }),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Shopify API error: ${res.status}`);
+  }
+
+  const json = await res.json();
+
+  if (json.errors) {
+    throw new Error(json.errors[0]?.message ?? "Shopify GraphQL error");
+  }
+
+  return json.data;
+}
+
+// ------- Customer API -------
+
+export async function customerCreate(input: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}): Promise<{ accessToken: string; expiresAt: string }> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer { id }
+        customerUserErrors { field message }
+      }
+    }
+  `, { input });
+
+  const errors = data.customerCreate.customerUserErrors;
+  if (errors?.length > 0) {
+    throw new Error(errors[0].message);
+  }
+
+  // Auto-login after registration
+  return customerAccessTokenCreate(input.email, input.password);
+}
+
+export async function customerAccessTokenCreate(
+  email: string,
+  password: string
+): Promise<{ accessToken: string; expiresAt: string }> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+      customerAccessTokenCreate(input: $input) {
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors { field message }
+      }
+    }
+  `, { input: { email, password } });
+
+  const errors = data.customerAccessTokenCreate.customerUserErrors;
+  if (errors?.length > 0) {
+    throw new Error(errors[0].message);
+  }
+
+  const token = data.customerAccessTokenCreate.customerAccessToken;
+  if (!token) {
+    throw new Error("Email ou mot de passe incorrect.");
+  }
+
+  return {
+    accessToken: token.accessToken,
+    expiresAt: token.expiresAt,
+  };
+}
+
+export async function customerAccessTokenDelete(accessToken: string): Promise<void> {
+  await shopifyMutate(`
+    mutation CustomerAccessTokenDelete($customerAccessToken: String!) {
+      customerAccessTokenDelete(customerAccessToken: $customerAccessToken) {
+        deletedAccessToken
+        userErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken });
+}
+
+export async function customerAccessTokenRenew(
+  accessToken: string
+): Promise<{ accessToken: string; expiresAt: string }> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerAccessTokenRenew($customerAccessToken: String!) {
+      customerAccessTokenRenew(customerAccessToken: $customerAccessToken) {
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        userErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken });
+
+  const token = data.customerAccessTokenRenew.customerAccessToken;
+  if (!token) {
+    throw new Error("Token renewal failed");
+  }
+
+  return {
+    accessToken: token.accessToken,
+    expiresAt: token.expiresAt,
+  };
+}
+
+export async function getCustomer(accessToken: string): Promise<AuthUser> {
+  const data = await shopifyMutate<any>(`
+    query GetCustomer($customerAccessToken: String!) {
+      customer(customerAccessToken: $customerAccessToken) {
+        id
+        firstName
+        lastName
+        email
+        phone
+      }
+    }
+  `, { customerAccessToken: accessToken });
+
+  if (!data.customer) {
+    throw new Error("Customer not found");
+  }
+
+  return {
+    firstName: data.customer.firstName,
+    lastName: data.customer.lastName,
+    email: data.customer.email,
+    phone: data.customer.phone ?? null,
+  };
+}
+
+// ------- Customer Orders -------
+
+export async function getCustomerOrders(
+  accessToken: string,
+  first: number = 20
+): Promise<ShopifyOrder[]> {
+  const data = await shopifyMutate<any>(`
+    query GetCustomerOrders($customerAccessToken: String!, $first: Int!) {
+      customer(customerAccessToken: $customerAccessToken) {
+        orders(first: $first, sortKey: PROCESSED_AT, reverse: true) {
+          edges {
+            node {
+              id
+              orderNumber
+              processedAt
+              financialStatus
+              fulfillmentStatus
+              totalPrice { amount currencyCode }
+              subtotalPrice { amount currencyCode }
+              totalShippingPrice { amount currencyCode }
+              totalTax { amount currencyCode }
+              statusUrl
+              shippingAddress {
+                id
+                firstName
+                lastName
+                company
+                address1
+                address2
+                city
+                province
+                zip
+                country
+                phone
+              }
+              lineItems(first: 50) {
+                edges {
+                  node {
+                    title
+                    quantity
+                    variant {
+                      image { url altText }
+                      price { amount currencyCode }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, { customerAccessToken: accessToken, first });
+
+  if (!data.customer) throw new Error("Customer not found");
+
+  return data.customer.orders.edges.map((e: any) => {
+    const node = e.node;
+    return {
+      id: node.id,
+      orderNumber: node.orderNumber,
+      processedAt: node.processedAt,
+      financialStatus: node.financialStatus,
+      fulfillmentStatus: node.fulfillmentStatus,
+      totalPrice: node.totalPrice,
+      subtotalPrice: node.subtotalPrice,
+      totalShippingPrice: node.totalShippingPrice,
+      totalTax: node.totalTax,
+      statusUrl: node.statusUrl,
+      shippingAddress: node.shippingAddress ?? null,
+      lineItems: node.lineItems.edges.map((le: any) => le.node),
+    } as ShopifyOrder;
+  });
+}
+
+// ------- Customer Addresses -------
+
+export async function getCustomerAddresses(
+  accessToken: string
+): Promise<{ addresses: ShopifyMailingAddress[]; defaultAddressId: string | null }> {
+  const data = await shopifyMutate<any>(`
+    query GetCustomerAddresses($customerAccessToken: String!) {
+      customer(customerAccessToken: $customerAccessToken) {
+        defaultAddress { id }
+        addresses(first: 20) {
+          edges {
+            node {
+              id
+              firstName
+              lastName
+              company
+              address1
+              address2
+              city
+              province
+              zip
+              country
+              phone
+            }
+          }
+        }
+      }
+    }
+  `, { customerAccessToken: accessToken });
+
+  if (!data.customer) throw new Error("Customer not found");
+
+  return {
+    addresses: data.customer.addresses.edges.map((e: any) => e.node),
+    defaultAddressId: data.customer.defaultAddress?.id ?? null,
+  };
+}
+
+// ------- Customer Update -------
+
+export async function customerUpdate(
+  accessToken: string,
+  input: { firstName?: string; lastName?: string; phone?: string }
+): Promise<AuthUser> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {
+      customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
+        customer {
+          firstName
+          lastName
+          email
+          phone
+        }
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, customer: input });
+
+  const errors = data.customerUpdate.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+
+  const c = data.customerUpdate.customer;
+  return { firstName: c.firstName, lastName: c.lastName, email: c.email, phone: c.phone ?? null };
+}
+
+// ------- Customer Password Update -------
+
+export async function customerPasswordUpdate(
+  accessToken: string,
+  password: string
+): Promise<{ accessToken: string; expiresAt: string }> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {
+      customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, customer: { password } });
+
+  const errors = data.customerUpdate.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+
+  const token = data.customerUpdate.customerAccessToken;
+  if (!token) throw new Error("Password update failed");
+
+  return { accessToken: token.accessToken, expiresAt: token.expiresAt };
+}
+
+// ------- Customer Address CRUD -------
+
+export async function customerAddressCreate(
+  accessToken: string,
+  address: ShopifyAddressInput
+): Promise<ShopifyMailingAddress> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerAddressCreate($customerAccessToken: String!, $address: MailingAddressInput!) {
+      customerAddressCreate(customerAccessToken: $customerAccessToken, address: $address) {
+        customerAddress {
+          id firstName lastName company address1 address2 city province zip country phone
+        }
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, address });
+
+  const errors = data.customerAddressCreate.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+
+  return data.customerAddressCreate.customerAddress;
+}
+
+export async function customerAddressUpdate(
+  accessToken: string,
+  addressId: string,
+  address: ShopifyAddressInput
+): Promise<ShopifyMailingAddress> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerAddressUpdate($customerAccessToken: String!, $id: ID!, $address: MailingAddressInput!) {
+      customerAddressUpdate(customerAccessToken: $customerAccessToken, id: $id, address: $address) {
+        customerAddress {
+          id firstName lastName company address1 address2 city province zip country phone
+        }
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, id: addressId, address });
+
+  const errors = data.customerAddressUpdate.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+
+  return data.customerAddressUpdate.customerAddress;
+}
+
+export async function customerAddressDelete(
+  accessToken: string,
+  addressId: string
+): Promise<void> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerAddressDelete($customerAccessToken: String!, $id: ID!) {
+      customerAddressDelete(customerAccessToken: $customerAccessToken, id: $id) {
+        deletedCustomerAddressId
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, id: addressId });
+
+  const errors = data.customerAddressDelete.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+}
+
+export async function customerDefaultAddressUpdate(
+  accessToken: string,
+  addressId: string
+): Promise<void> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerDefaultAddressUpdate($customerAccessToken: String!, $addressId: ID!) {
+      customerDefaultAddressUpdate(customerAccessToken: $customerAccessToken, addressId: $addressId) {
+        customer { id }
+        customerUserErrors { field message }
+      }
+    }
+  `, { customerAccessToken: accessToken, addressId });
+
+  const errors = data.customerDefaultAddressUpdate.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
+}
+
+// ------- Customer Recover (forgot password) -------
+
+export async function customerRecover(email: string): Promise<void> {
+  const data = await shopifyMutate<any>(`
+    mutation CustomerRecover($email: String!) {
+      customerRecover(email: $email) {
+        customerUserErrors { field message }
+      }
+    }
+  `, { email });
+
+  const errors = data.customerRecover.customerUserErrors;
+  if (errors?.length > 0) throw new Error(errors[0].message);
 }

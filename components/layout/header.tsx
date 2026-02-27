@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/cart-provider";
 import { useAuth } from "@/components/auth/auth-provider";
 import { MobileMenu } from "./mobile-menu";
@@ -17,7 +18,10 @@ const navLinks = [
 export function Header() {
   const { totalItems } = useCart();
   const { user } = useAuth();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -27,7 +31,17 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  }
+
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         scrolled
@@ -43,8 +57,66 @@ export function Header() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* === MOBILE HEADER: burger | logo | search + cart === */}
         <div
-          className={`flex items-center justify-between transition-all duration-500 ${
+          className={`flex lg:hidden items-center justify-between transition-all duration-500 ${
+            scrolled ? "h-14" : "h-16"
+          }`}
+        >
+          {/* Left: burger */}
+          <button
+            className="w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+
+          {/* Center: logo */}
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+            <Image
+              src="/images/logo/Belyzlashlogo2-Blanc.png"
+              alt="BelyzLash"
+              width={120}
+              height={30}
+              className={`transition-all duration-500 ${scrolled ? "h-10 w-auto" : "h-12 w-auto"}`}
+              priority
+            />
+          </Link>
+
+          {/* Right: search + cart */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Rechercher"
+              className="w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+            </button>
+            <Link
+              href="/cart"
+              aria-label="Panier"
+              className="relative w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              {totalItems > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-brand-gold text-brand-black text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold shadow-lg animate-fade-in-scale">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
+
+        {/* === DESKTOP HEADER (unchanged) === */}
+        <div
+          className={`hidden lg:flex items-center justify-between transition-all duration-500 ${
             scrolled ? "h-16" : "h-20 sm:h-24"
           }`}
         >
@@ -61,7 +133,7 @@ export function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -82,19 +154,8 @@ export function Header() {
               aria-label="Mon compte"
               className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-[18px] h-[18px]"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               {user && (
                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-brand-gold shadow-lg" />
@@ -107,19 +168,8 @@ export function Header() {
               aria-label="Panier"
               className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-[18px] h-[18px]"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
               </svg>
               {totalItems > 0 && (
                 <span className="absolute top-0.5 right-0.5 bg-brand-gold text-brand-black text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold shadow-lg animate-fade-in-scale">
@@ -127,29 +177,58 @@ export function Header() {
                 </span>
               )}
             </Link>
-
-            {/* Mobile menu button */}
-            <button
-              className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Menu"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </header>
+
+    <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+    {/* Search overlay (mobile) */}
+    <div
+      className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
+        searchOpen ? "visible" : "invisible pointer-events-none"
+      }`}
+    >
+      <div
+        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+          searchOpen ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={() => setSearchOpen(false)}
+      />
+      <div
+        className={`absolute top-0 left-0 right-0 bg-brand-green p-4 transition-transform duration-300 ease-out ${
+          searchOpen ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <form onSubmit={handleSearch} className="flex items-center gap-3">
+          <div className="flex-1 relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-cream/40" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Rechercher un produit..."
+              autoFocus
+              className="w-full bg-white/10 border border-white/10 rounded-full pl-10 pr-4 py-3 text-sm text-brand-cream placeholder:text-brand-cream/30 focus:outline-none focus:border-brand-gold/40"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setSearchOpen(false)}
+            className="w-10 h-10 flex items-center justify-center text-brand-cream/60 hover:text-brand-cream transition-colors"
+            aria-label="Fermer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+    </>
   );
 }

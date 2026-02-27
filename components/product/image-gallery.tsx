@@ -9,25 +9,25 @@ export function ImageGallery({ images }: { images: ProductImage[] }) {
 
   if (images.length === 0) {
     return (
-      <div className="aspect-[3/4] rounded-3xl bg-brand-beige/50 flex items-center justify-center text-brand-black/20 font-serif text-2xl">
+      <div className="aspect-square rounded-2xl bg-brand-beige/50 flex items-center justify-center text-brand-black/20 font-serif text-2xl">
         Pas d&apos;image
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col-reverse sm:flex-row gap-4 sticky top-28">
+    <div className="flex flex-col-reverse sm:flex-row gap-3 sticky top-28">
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex sm:flex-col gap-3 sm:w-20">
+        <div className="flex sm:flex-col gap-2 sm:w-16">
           {images.map((img, i) => (
             <button
               key={img.id}
               onClick={() => setSelected(i)}
-              className={`relative aspect-square w-16 sm:w-full rounded-xl overflow-hidden border-2 transition-all duration-300 flex-shrink-0 ${
+              className={`relative aspect-square w-14 sm:w-full rounded-lg overflow-hidden border-2 transition-all duration-300 flex-shrink-0 ${
                 i === selected
-                  ? "border-brand-gold shadow-lg shadow-brand-gold/10"
-                  : "border-transparent opacity-50 hover:opacity-100"
+                  ? "border-brand-gold"
+                  : "border-transparent opacity-40 hover:opacity-80"
               }`}
             >
               <Image
@@ -44,7 +44,7 @@ export function ImageGallery({ images }: { images: ProductImage[] }) {
 
       {/* Main image */}
       <div className="flex-1 relative">
-        <div className="aspect-[3/4] relative overflow-hidden rounded-3xl bg-brand-beige/30">
+        <div className="aspect-square relative overflow-hidden rounded-2xl bg-brand-beige/30">
           {images.map((img, i) => (
             <div
               key={img.id}

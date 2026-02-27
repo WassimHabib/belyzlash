@@ -29,7 +29,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-8 left-0 right-0 z-40 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         scrolled
           ? "bg-brand-green/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
           : "bg-brand-green/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none"

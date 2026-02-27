@@ -13,20 +13,20 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
       href={`/shop/${product.slug}`}
       className="group block"
     >
-      <div className="relative rounded-3xl overflow-hidden bg-brand-beige/40 border border-brand-beige/60 hover:border-brand-gold/30 transition-all duration-500 hover:shadow-[0_20px_60px_-12px_rgba(31,58,52,0.12)]">
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-brand-beige/40 border border-brand-beige/60 hover:border-brand-gold/30 transition-all duration-500 hover:shadow-[0_20px_60px_-12px_rgba(31,58,52,0.12)]">
         {/* Image */}
-        <div className="aspect-[3/4] relative overflow-hidden">
+        <div className="aspect-square sm:aspect-[3/4] relative overflow-hidden">
           {image ? (
             <Image
               src={image.src}
               alt={image.alt || product.name}
               fill
               className="object-cover transition-all duration-700 ease-out group-hover:scale-110"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-brand-beige">
-              <span className="font-serif text-4xl text-brand-green/20">{product.name[0]}</span>
+              <span className="font-serif text-2xl sm:text-4xl text-brand-green/20">{product.name[0]}</span>
             </div>
           )}
 
@@ -35,27 +35,18 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
 
           {/* Sale badge */}
           {product.sale_price && (
-            <div className="absolute top-4 left-4 z-10">
-              <div className="relative">
-                <div className="bg-brand-gold text-brand-black text-[10px] tracking-[0.15em] uppercase px-4 py-1.5 rounded-full font-bold shadow-lg">
-                  Promo
-                </div>
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
+              <div className="bg-brand-gold text-brand-black text-[8px] sm:text-[10px] tracking-[0.15em] uppercase px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full font-bold shadow-lg">
+                Promo
               </div>
             </div>
           )}
 
-          {/* Product number */}
-          <div className="absolute top-4 right-4 z-10">
-            <span className="text-white/20 font-serif text-sm group-hover:text-white/40 transition-colors duration-500">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-          </div>
-
           {/* Hover CTA */}
-          <div className="absolute bottom-0 left-0 right-0 p-5 flex justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
-            <span className="inline-flex items-center gap-2 bg-white text-brand-green text-[11px] tracking-[0.15em] uppercase px-6 py-3 rounded-full font-semibold shadow-xl backdrop-blur-sm">
-              Decouvrir
-              <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 flex justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
+            <span className="inline-flex items-center gap-2 bg-white text-brand-green text-[10px] sm:text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 sm:px-6 sm:py-3 rounded-full font-semibold shadow-xl">
+              Voir
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </span>
@@ -63,28 +54,26 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
         </div>
 
         {/* Info */}
-        <div className="p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              {product.categories?.[0] && (
-                <p className="text-brand-gold text-[10px] tracking-[0.25em] uppercase mb-1.5 font-medium">
-                  {product.categories[0].name}
-                </p>
-              )}
-              <h3 className="text-brand-green font-medium text-sm sm:text-base leading-tight truncate group-hover:text-brand-gold transition-colors duration-300">
-                {product.name}
-              </h3>
-            </div>
-            <div className="flex-shrink-0 text-right">
-              {product.sale_price ? (
-                <div className="flex flex-col items-end">
-                  <p className="text-brand-gold font-bold text-base">{product.sale_price}&nbsp;&euro;</p>
-                  <p className="text-brand-black/25 line-through text-[11px]">{product.regular_price}&nbsp;&euro;</p>
-                </div>
-              ) : (
-                <p className="text-brand-gold font-bold text-base">{product.price}&nbsp;&euro;</p>
-              )}
-            </div>
+        <div className="p-3 sm:p-5">
+          <div className="min-w-0">
+            {product.categories?.[0] && (
+              <p className="text-brand-gold text-[8px] sm:text-[10px] tracking-[0.25em] uppercase mb-1 font-medium">
+                {product.categories[0].name}
+              </p>
+            )}
+            <h3 className="text-brand-green font-medium text-xs sm:text-base leading-tight truncate group-hover:text-brand-gold transition-colors duration-300">
+              {product.name}
+            </h3>
+          </div>
+          <div className="mt-1.5">
+            {product.sale_price ? (
+              <div className="flex items-center gap-2">
+                <p className="text-brand-gold font-bold text-sm sm:text-base">{product.sale_price}&nbsp;&euro;</p>
+                <p className="text-brand-black/25 line-through text-[10px] sm:text-[11px]">{product.regular_price}&nbsp;&euro;</p>
+              </div>
+            ) : (
+              <p className="text-brand-gold font-bold text-sm sm:text-base">{product.price}&nbsp;&euro;</p>
+            )}
           </div>
         </div>
       </div>
@@ -132,7 +121,7 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
         <div className={`w-full h-px bg-gradient-to-r from-brand-gold/30 via-brand-beige to-transparent mb-10 ${isVisible ? "animate-line-grow" : "opacity-0"}`} />
 
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
           {products.slice(0, 6).map((product, i) => (
             <div
               key={product.id}

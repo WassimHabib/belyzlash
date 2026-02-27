@@ -37,17 +37,17 @@ export default async function ShopPage({
           <div className="absolute -top-1/3 -right-1/4 w-[600px] h-[600px] rounded-full bg-brand-gold/5 blur-[120px]" />
           <div className="absolute -bottom-1/3 -left-1/4 w-[400px] h-[400px] rounded-full bg-brand-cream/5 blur-[100px]" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-36 pb-14 sm:pb-16">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-px bg-brand-gold" />
-            <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase font-bold">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-36 pb-8 sm:pb-16">
+          <div className="flex items-center gap-3 mb-2 sm:mb-4">
+            <div className="w-8 sm:w-10 h-px bg-brand-gold" />
+            <p className="text-brand-gold text-[10px] sm:text-sm tracking-[0.4em] uppercase font-bold">
               Nos Produits
             </p>
           </div>
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-cream leading-tight font-bold">
+          <h1 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-cream leading-tight font-bold">
             Notre <span className="text-gradient-gold">Collection</span>
           </h1>
-          <p className="mt-4 text-brand-cream/50 text-sm sm:text-base max-w-lg">
+          <p className="mt-2 sm:mt-4 text-brand-cream/50 text-xs sm:text-base max-w-lg">
             Decouvrez notre selection de produits professionnels pour sublimer chaque regard.
           </p>
         </div>

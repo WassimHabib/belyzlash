@@ -32,7 +32,7 @@ export function Header() {
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         scrolled
           ? "bg-brand-green/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
-          : "bg-transparent"
+          : "bg-brand-green/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none"
       }`}
     >
       {/* Top accent line */}
@@ -55,7 +55,7 @@ export function Header() {
               alt="BelyzLash"
               width={160}
               height={40}
-              className={`transition-all duration-500 ${scrolled ? "h-20 sm:h-24 w-auto" : "h-20 sm:h-[12rem] w-auto"}`}
+              className={`transition-all duration-500 ${scrolled ? "h-14 sm:h-24 w-auto" : "h-14 sm:h-[12rem] w-auto"}`}
               priority
             />
           </Link>

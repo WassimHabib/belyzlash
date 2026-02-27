@@ -59,7 +59,7 @@ function mapProduct(node: any): Product {
     name: node.title,
     slug: node.handle,
     price: parseFloat(price).toFixed(2),
-    regular_price: compareAtPrice
+    regular_price: compareAtPrice && parseFloat(compareAtPrice) > 0
       ? parseFloat(compareAtPrice).toFixed(2)
       : parseFloat(price).toFixed(2),
     sale_price: compareAtPrice && parseFloat(compareAtPrice) > parseFloat(price)

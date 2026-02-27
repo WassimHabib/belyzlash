@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockCreateOrder = vi.fn();
-vi.mock("@/lib/woocommerce", () => ({
-  createOrder: (...args: any[]) => mockCreateOrder(...args),
+const mockCreateCheckout = vi.fn();
+vi.mock("@/lib/shopify", () => ({
+  createCheckout: (...args: any[]) => mockCreateCheckout(...args),
 }));
 
 describe("POST /api/checkout", () => {
@@ -10,22 +10,17 @@ describe("POST /api/checkout", () => {
     vi.resetAllMocks();
   });
 
-  it("creates a WooCommerce order and returns order id", async () => {
-    mockCreateOrder.mockResolvedValueOnce({ id: 123 });
+  it("creates a Shopify checkout and returns checkout URL", async () => {
+    mockCreateCheckout.mockResolvedValueOnce({
+      id: "gid://shopify/Checkout/123",
+      checkoutUrl: "https://shop.myshopify.com/checkout/123",
+    });
 
     const { POST } = await import("@/app/api/checkout/route");
     const body = {
-      billing: {
-        first_name: "Jean",
-        last_name: "Dupont",
-        email: "jean@test.com",
-        phone: "0600000000",
-        address_1: "1 rue de Paris",
-        city: "Paris",
-        postcode: "75001",
-        country: "FR",
-      },
-      items: [{ product_id: 1, quantity: 2 }],
+      items: [
+        { variantId: "gid://shopify/ProductVariant/1", quantity: 2 },
+      ],
     };
 
     const request = new Request("http://localhost/api/checkout", {
@@ -38,11 +33,12 @@ describe("POST /api/checkout", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.orderId).toBe(123);
-    expect(mockCreateOrder).toHaveBeenCalledOnce();
+    expect(data.checkoutUrl).toBe("https://shop.myshopify.com/checkout/123");
+    expect(data.checkoutId).toBe("gid://shopify/Checkout/123");
+    expect(mockCreateCheckout).toHaveBeenCalledOnce();
   });
 
-  it("returns 400 if billing info is missing", async () => {
+  it("returns 400 if items are empty", async () => {
     const { POST } = await import("@/app/api/checkout/route");
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",

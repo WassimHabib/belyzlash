@@ -16,9 +16,24 @@ export function ProductInfo({ product }: { product: Product }) {
   const allSelected = product.attributes.every((attr) => selected[attr.name]);
   const canAdd = !hasVariants || allSelected;
 
+  function getVariantGid(): string {
+    const variants = product.variantNodes;
+    if (!variants.length) return "";
+    if (!hasVariants || variants.length === 1) return variants[0].gid;
+    // Match selected options to find the right variant
+    return (
+      variants.find((v) =>
+        v.selectedOptions.every(
+          (opt) => selected[opt.name] === opt.value
+        )
+      )?.gid ?? variants[0].gid
+    );
+  }
+
   function handleAddToCart() {
     addItem({
       productId: product.id,
+      variantGid: getVariantGid(),
       name: product.name,
       price: parseFloat(product.price),
       image: product.images[0]?.src ?? "",

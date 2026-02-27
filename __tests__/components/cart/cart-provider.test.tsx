@@ -9,6 +9,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 
 const mockItem: CartItem = {
   productId: 1,
+  variantGid: "gid://shopify/ProductVariant/1",
   name: "Test Product",
   price: 99.99,
   image: "/test.jpg",

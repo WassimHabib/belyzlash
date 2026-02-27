@@ -17,6 +17,11 @@ export interface ProductVariation {
   stock_status: string;
 }
 
+export interface ShopifyProductVariant {
+  gid: string;
+  selectedOptions: { name: string; value: string }[];
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -29,6 +34,7 @@ export interface Product {
   images: ProductImage[];
   attributes: ProductAttribute[];
   variations: number[];
+  variantNodes: ShopifyProductVariant[];
   categories: { id: number; name: string; slug: string }[];
   stock_status: string;
 }
@@ -43,6 +49,7 @@ export interface ProductCategory {
 export interface CartItem {
   productId: number;
   variationId?: number;
+  variantGid: string;
   name: string;
   price: number;
   image: string;

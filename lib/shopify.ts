@@ -76,6 +76,10 @@ function mapProduct(node: any): Product {
     variations: variants.map((v: any) =>
       parseInt(v.id.replace(/\D/g, "").slice(-12), 10) || 0
     ),
+    variantNodes: variants.map((v: any) => ({
+      gid: v.id,
+      selectedOptions: v.selectedOptions ?? [],
+    })),
     categories,
     stock_status: node.availableForSale ? "instock" : "outofstock",
   };
@@ -128,7 +132,7 @@ export async function getProducts(options?: {
             }
             variants(first: 30) {
               edges {
-                node { id }
+                node { id selectedOptions { name value } }
               }
             }
             collections(first: 3) {

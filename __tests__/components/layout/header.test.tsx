@@ -2,25 +2,29 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Header } from "@/components/layout/header";
 import { CartProvider } from "@/components/cart/cart-provider";
+import { AuthProvider } from "@/components/auth/auth-provider";
 
 function renderHeader() {
   return render(
-    <CartProvider>
-      <Header />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Header />
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
 describe("Header", () => {
-  it("renders the brand name", () => {
+  it("renders the logo image", () => {
     renderHeader();
-    expect(screen.getByText(/Belyz/)).toBeInTheDocument();
-    expect(screen.getByText("Lash")).toBeInTheDocument();
+    expect(screen.getByAltText("BelyzLash")).toBeInTheDocument();
   });
 
   it("renders navigation links", () => {
     renderHeader();
-    expect(screen.getByRole("link", { name: /nos produits/i })).toHaveAttribute("href", "/shop");
+    const links = screen.getAllByRole("link", { name: /nos produits/i });
+    expect(links.length).toBeGreaterThan(0);
+    expect(links[0]).toHaveAttribute("href", "/shop");
   });
 
   it("renders cart link with item count", () => {

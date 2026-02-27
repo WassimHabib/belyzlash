@@ -16,7 +16,9 @@ export async function POST(request: Request) {
       body.items.map((item: { variantId: string; quantity: number }) => ({
         variantId: item.variantId,
         quantity: item.quantity,
-      }))
+      })),
+      body.shippingAddress,
+      body.email
     );
 
     return NextResponse.json({

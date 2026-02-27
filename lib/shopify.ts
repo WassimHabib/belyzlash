@@ -214,8 +214,29 @@ export async function getCategories(): Promise<ProductCategory[]> {
 }
 
 export async function createCheckout(
-  lineItems: { variantId: string; quantity: number }[]
+  lineItems: { variantId: string; quantity: number }[],
+  shippingAddress?: {
+    firstName?: string;
+    lastName?: string;
+    address1?: string;
+    city?: string;
+    province?: string;
+    zip?: string;
+    country?: string;
+    phone?: string;
+  },
+  email?: string
 ): Promise<{ checkoutUrl: string; id: string }> {
+  const input: Record<string, unknown> = {
+    lineItems: lineItems.map((item) => ({
+      variantId: item.variantId,
+      quantity: item.quantity,
+    })),
+  };
+
+  if (email) input.email = email;
+  if (shippingAddress) input.shippingAddress = shippingAddress;
+
   const data = await shopifyFetch<any>(`
     mutation CreateCheckout($input: CheckoutCreateInput!) {
       checkoutCreate(input: $input) {
@@ -229,14 +250,7 @@ export async function createCheckout(
         }
       }
     }
-  `, {
-    input: {
-      lineItems: lineItems.map((item) => ({
-        variantId: item.variantId,
-        quantity: item.quantity,
-      })),
-    },
-  });
+  `, { input });
 
   const checkout = data.checkoutCreate.checkout;
   if (!checkout) {

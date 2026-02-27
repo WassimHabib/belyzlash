@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/components/cart/cart-provider";
 import { ShippingForm } from "@/components/checkout/shipping-form";
@@ -9,8 +8,7 @@ import { OrderSummary } from "@/components/checkout/order-summary";
 import { OrderBilling } from "@/lib/types";
 
 export default function CheckoutPage() {
-  const { items, clearCart } = useCart();
-  const router = useRouter();
+  const { items } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,22 +47,29 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          billing,
           items: items.map((item) => ({
-            product_id: item.productId,
-            variation_id: item.variationId,
+            variantId: item.variantGid,
             quantity: item.quantity,
           })),
+          email: billing.email,
+          shippingAddress: {
+            firstName: billing.first_name,
+            lastName: billing.last_name,
+            address1: billing.address_1,
+            city: billing.city,
+            zip: billing.postcode,
+            country: billing.country,
+            phone: billing.phone,
+          },
         }),
       });
 
-      if (!res.ok) throw new Error("Erreur lors de la commande");
+      if (!res.ok) throw new Error("Erreur lors de la creation du checkout");
 
-      clearCart();
-      router.push("/checkout/success");
+      const data = await res.json();
+      window.location.href = data.checkoutUrl;
     } catch {
       setError("Une erreur est survenue. Veuillez reessayer.");
-    } finally {
       setLoading(false);
     }
   }

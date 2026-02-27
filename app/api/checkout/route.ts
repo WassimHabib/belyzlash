@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createCheckout } from "@/lib/shopify";
+import { getAuthToken } from "@/lib/auth-cookies";
 
 export async function POST(request: Request) {
   try {
@@ -12,13 +13,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const token = await getAuthToken();
+
     const checkout = await createCheckout(
       body.items.map((item: { variantId: string; quantity: number }) => ({
         variantId: item.variantId,
         quantity: item.quantity,
       })),
-      body.shippingAddress,
-      body.email
+      token
     );
 
     return NextResponse.json({

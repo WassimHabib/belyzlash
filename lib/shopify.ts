@@ -90,7 +90,7 @@ function mapCategory(node: any): ProductCategory {
     id: parseInt(node.id.replace(/\D/g, "").slice(-8), 10) || 0,
     name: node.title,
     slug: node.handle,
-    count: node.productsCount?.count ?? 0,
+    count: 0,
   };
 }
 
@@ -201,9 +201,6 @@ export async function getCategories(): Promise<ProductCategory[]> {
             id
             title
             handle
-            productsCount {
-              count
-            }
           }
         }
       }
@@ -215,36 +212,27 @@ export async function getCategories(): Promise<ProductCategory[]> {
 
 export async function createCheckout(
   lineItems: { variantId: string; quantity: number }[],
-  shippingAddress?: {
-    firstName?: string;
-    lastName?: string;
-    address1?: string;
-    city?: string;
-    province?: string;
-    zip?: string;
-    country?: string;
-    phone?: string;
-  },
-  email?: string
+  customerAccessToken?: string
 ): Promise<{ checkoutUrl: string; id: string }> {
   const input: Record<string, unknown> = {
-    lineItems: lineItems.map((item) => ({
-      variantId: item.variantId,
+    lines: lineItems.map((item) => ({
+      merchandiseId: item.variantId,
       quantity: item.quantity,
     })),
   };
 
-  if (email) input.email = email;
-  if (shippingAddress) input.shippingAddress = shippingAddress;
+  if (customerAccessToken) {
+    input.buyerIdentity = { customerAccessToken };
+  }
 
-  const data = await shopifyFetch<any>(`
-    mutation CreateCheckout($input: CheckoutCreateInput!) {
-      checkoutCreate(input: $input) {
-        checkout {
+  const data = await shopifyMutate<any>(`
+    mutation CartCreate($input: CartInput!) {
+      cartCreate(input: $input) {
+        cart {
           id
-          webUrl
+          checkoutUrl
         }
-        checkoutUserErrors {
+        userErrors {
           message
           field
         }
@@ -252,15 +240,15 @@ export async function createCheckout(
     }
   `, { input });
 
-  const checkout = data.checkoutCreate.checkout;
-  if (!checkout) {
-    const errors = data.checkoutCreate.checkoutUserErrors;
-    throw new Error(errors?.[0]?.message ?? "Checkout creation failed");
+  const cart = data.cartCreate.cart;
+  if (!cart) {
+    const errors = data.cartCreate.userErrors;
+    throw new Error(errors?.[0]?.message ?? "Cart creation failed");
   }
 
   return {
-    checkoutUrl: checkout.webUrl,
-    id: checkout.id,
+    checkoutUrl: cart.checkoutUrl,
+    id: cart.id,
   };
 }
 

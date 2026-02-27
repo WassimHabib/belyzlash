@@ -19,7 +19,8 @@ export default async function ShopPage({
   let products, categories;
   try {
     [products, categories] = await Promise.all([getProducts(), getCategories()]);
-  } catch {
+  } catch (err) {
+    console.error("[SHOP] Shopify fetch failed:", err);
     products = mockProducts;
     categories = mockCategories;
   }

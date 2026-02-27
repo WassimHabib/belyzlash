@@ -2,6 +2,42 @@
 
 import Link from "next/link";
 import { useCart } from "./cart-provider";
+import { getFreeShippingPromo } from "@/lib/promotions";
+
+function FreeShippingProgress({ totalPrice }: { totalPrice: number }) {
+  const promo = getFreeShippingPromo();
+  if (!promo || !promo.threshold) return null;
+
+  const threshold = promo.threshold;
+  const remaining = threshold - totalPrice;
+  const progress = Math.min((totalPrice / threshold) * 100, 100);
+  const qualified = remaining <= 0;
+
+  return (
+    <div className="mb-6">
+      {qualified ? (
+        <div className="flex items-center gap-2 text-brand-green">
+          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          <p className="text-xs font-semibold tracking-wide">Livraison offerte !</p>
+        </div>
+      ) : (
+        <p className="text-xs text-brand-black/50">
+          Plus que <span className="font-bold text-brand-gold">{remaining.toFixed(2)}&nbsp;&euro;</span> pour la livraison offerte
+        </p>
+      )}
+      <div className="mt-2 h-1.5 rounded-full bg-brand-beige/60 overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-700 ease-out ${
+            qualified ? "bg-brand-green" : "bg-brand-gold"
+          }`}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function CartSummary() {
   const { totalPrice, totalItems } = useCart();
@@ -13,6 +49,8 @@ export function CartSummary() {
         <div className="rounded-3xl border border-brand-beige/60 bg-white p-7 sm:p-8">
           <h2 className="font-serif text-xl text-brand-green mb-6">Resume de la commande</h2>
 
+          <FreeShippingProgress totalPrice={totalPrice} />
+
           <div className="space-y-4 text-sm">
             <div className="flex justify-between">
               <span className="text-brand-black/50">Sous-total ({totalItems} article{totalItems !== 1 ? "s" : ""})</span>
@@ -20,7 +58,11 @@ export function CartSummary() {
             </div>
             <div className="flex justify-between">
               <span className="text-brand-black/50">Livraison</span>
-              <span className="text-brand-black/30 text-xs">Calcule a l&apos;etape suivante</span>
+              {totalPrice >= (getFreeShippingPromo()?.threshold ?? Infinity) ? (
+                <span className="text-brand-green text-xs font-semibold">Offerte</span>
+              ) : (
+                <span className="text-brand-black/30 text-xs">Calcule a l&apos;etape suivante</span>
+              )}
             </div>
 
             <div className="w-full h-px bg-gradient-to-r from-brand-beige via-brand-beige/50 to-transparent" />
@@ -63,6 +105,8 @@ export function CartSummary() {
         <div className="rounded-3xl border border-brand-beige/60 bg-white p-6">
           <h2 className="font-serif text-lg text-brand-green mb-4">Resume</h2>
 
+          <FreeShippingProgress totalPrice={totalPrice} />
+
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-brand-black/50">Sous-total ({totalItems} article{totalItems !== 1 ? "s" : ""})</span>
@@ -70,7 +114,11 @@ export function CartSummary() {
             </div>
             <div className="flex justify-between">
               <span className="text-brand-black/50">Livraison</span>
-              <span className="text-brand-black/30 text-xs">Calcule apres</span>
+              {totalPrice >= (getFreeShippingPromo()?.threshold ?? Infinity) ? (
+                <span className="text-brand-green text-xs font-semibold">Offerte</span>
+              ) : (
+                <span className="text-brand-black/30 text-xs">Calcule apres</span>
+              )}
             </div>
           </div>
         </div>

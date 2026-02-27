@@ -5,6 +5,7 @@ import { CartProvider } from "@/components/cart/cart-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PromoBar } from "@/components/layout/promo-bar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
+            <PromoBar />
             <Header />
             {children}
             <Footer />

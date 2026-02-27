@@ -10,12 +10,13 @@ export interface Promotion {
 }
 
 export const activePromotions: Promotion[] = [
-  {
-    id: "free-shipping-150",
-    text: "Livraison offerte des 150€ d'achat",
-    threshold: 150,
-    type: "free_shipping",
-  },
+  // Decommente et modifie pour activer une promo :
+  // {
+  //   id: "free-shipping-150",
+  //   text: "Livraison offerte des 150€ d'achat",
+  //   threshold: 150,
+  //   type: "free_shipping",
+  // },
 ];
 
 /** Retourne la promo de livraison offerte active (s'il y en a une) */

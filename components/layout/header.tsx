@@ -128,7 +128,7 @@ export function Header() {
               alt="BelyzLash"
               width={160}
               height={40}
-              className={`transition-all duration-500 ${scrolled ? "h-14 sm:h-24 w-auto" : "h-14 sm:h-[12rem] w-auto"}`}
+              className={`transition-all duration-500 ${scrolled ? "h-10 sm:h-14 w-auto" : "h-12 sm:h-16 w-auto"}`}
               priority
             />
           </Link>

@@ -23,12 +23,12 @@ export default async function Home() {
       <HeroSection />
       <MarqueeBanner />
       <FeaturedProducts products={products} />
-      <BenefitsBar />
+      <AmbassadriceSection />
       <StatsSection />
       <BrandBanner />
       <Testimonials />
-      <AmbassadriceSection />
       <FormationsSection />
+      <BenefitsBar />
     </main>
   );
 }

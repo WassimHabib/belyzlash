@@ -11,7 +11,7 @@ export function MarqueeBanner() {
   const repeated = [...items, ...items];
 
   return (
-    <div className="bg-white border-y border-brand-gold/10 py-4 overflow-hidden">
+    <div className="bg-white border-y border-brand-gold/10 py-4 overflow-hidden lg:sticky lg:top-[84px] lg:z-30">
       <div className="animate-marquee flex whitespace-nowrap">
         {repeated.map((item, i) => (
           <span key={i} className="mx-8 text-[11px] tracking-[0.3em] uppercase text-brand-green/50 flex items-center gap-8">

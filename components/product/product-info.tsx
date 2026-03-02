@@ -48,7 +48,7 @@ export function ProductInfo({ product }: { product: Product }) {
 
   return (
     <>
-    <div className="lg:sticky lg:top-28 space-y-8 pb-28 lg:pb-0">
+    <div className="lg:sticky lg:top-28 space-y-3 sm:space-y-8 pb-28 lg:pb-0">
       {/* Category */}
       {product.categories?.[0] && (
         <p className="text-brand-gold text-[10px] tracking-[0.3em] uppercase font-semibold">

@@ -59,7 +59,7 @@ export default async function ProductPage({
         </nav>
 
         {/* Product content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-start pb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-start pb-2">
           <ImageGallery images={product.images} />
           <ProductInfo product={product} />
         </div>

@@ -48,7 +48,7 @@ export function ProductInfo({ product }: { product: Product }) {
 
   return (
     <>
-    <div className="lg:sticky lg:top-28 space-y-3 sm:space-y-8 pb-28 lg:pb-0">
+    <div className="lg:sticky lg:top-28 space-y-3 sm:space-y-4 pb-28 lg:pb-0">
       {/* Category */}
       {product.categories?.[0] && (
         <p className="text-brand-gold text-[10px] tracking-[0.3em] uppercase font-semibold">
@@ -98,8 +98,8 @@ export function ProductInfo({ product }: { product: Product }) {
 
       {/* Description */}
       {product.description && (
-        <div className="pt-6 border-t border-brand-beige/40">
-          <p className="text-[11px] tracking-[0.2em] uppercase font-semibold text-brand-green mb-4">Description</p>
+        <div className="pt-3 border-t border-brand-beige/40">
+          <p className="text-[11px] tracking-[0.2em] uppercase font-semibold text-brand-green mb-2">Description</p>
           <div
             className="prose prose-sm text-brand-black/50 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: product.description }}

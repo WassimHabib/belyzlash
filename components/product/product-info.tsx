@@ -20,7 +20,6 @@ export function ProductInfo({ product }: { product: Product }) {
     const variants = product.variantNodes;
     if (!variants.length) return "";
     if (!hasVariants || variants.length === 1) return variants[0].gid;
-    // Match selected options to find the right variant
     return (
       variants.find((v) =>
         v.selectedOptions.every(
@@ -49,7 +48,7 @@ export function ProductInfo({ product }: { product: Product }) {
 
   return (
     <>
-    <div className="lg:sticky lg:top-28 space-y-6 pb-28 lg:pb-0">
+    <div className="lg:sticky lg:top-28 space-y-8 pb-28 lg:pb-0">
       {/* Category */}
       {product.categories?.[0] && (
         <p className="text-brand-gold text-[10px] tracking-[0.3em] uppercase font-semibold">
@@ -57,30 +56,33 @@ export function ProductInfo({ product }: { product: Product }) {
         </p>
       )}
 
-      {/* Title & price */}
-      <div>
-        <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-brand-green mb-3 leading-tight">
-          {product.name}
-        </h1>
-        <div className="flex items-center gap-3">
-          {product.sale_price ? (
-            <>
-              <p className="text-xl font-bold text-gradient-gold">{product.sale_price}&nbsp;&euro;</p>
-              <p className="text-brand-black/30 line-through">{product.regular_price}&nbsp;&euro;</p>
-              <span className="bg-brand-gold/10 text-brand-gold text-[10px] tracking-[0.15em] uppercase font-bold px-2.5 py-0.5 rounded-full">
-                Promo
-              </span>
-            </>
-          ) : (
-            <p className="text-xl font-bold text-gradient-gold">{product.price}&nbsp;&euro;</p>
-          )}
-        </div>
+      {/* Title */}
+      <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-brand-green leading-tight">
+        {product.name}
+      </h1>
+
+      {/* Price */}
+      <div className="flex items-center gap-3">
+        {product.sale_price ? (
+          <>
+            <p className="text-2xl font-bold text-brand-green">{product.sale_price}&nbsp;&euro;</p>
+            <p className="text-brand-black/30 line-through text-lg">{product.regular_price}&nbsp;&euro;</p>
+            <span className="bg-brand-gold/10 text-brand-gold text-[10px] tracking-[0.15em] uppercase font-bold px-2.5 py-0.5 rounded-full">
+              Promo
+            </span>
+          </>
+        ) : (
+          <p className="text-2xl font-bold text-brand-green">{product.price}&nbsp;&euro;</p>
+        )}
       </div>
 
       {/* Short description */}
       {product.short_description && (
-        <p className="text-brand-black/50 text-sm leading-relaxed">{product.short_description}</p>
+        <p className="text-brand-black/50 text-[15px] leading-relaxed">{product.short_description}</p>
       )}
+
+      {/* Divider */}
+      <div className="w-full h-px bg-brand-beige/60" />
 
       {/* Variants */}
       {hasVariants && (
@@ -96,7 +98,8 @@ export function ProductInfo({ product }: { product: Product }) {
 
       {/* Description */}
       {product.description && (
-        <div className="pt-4 border-t border-brand-beige/40">
+        <div className="pt-6 border-t border-brand-beige/40">
+          <p className="text-[11px] tracking-[0.2em] uppercase font-semibold text-brand-green mb-4">Description</p>
           <div
             className="prose prose-sm text-brand-black/50 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: product.description }}
@@ -137,7 +140,7 @@ export function ProductInfo({ product }: { product: Product }) {
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-brand-green font-serif text-sm truncate">{product.name}</p>
-            <p className="text-brand-gold font-bold text-lg">{displayPrice}&nbsp;&euro;</p>
+            <p className="text-brand-green font-bold text-lg">{displayPrice}&nbsp;&euro;</p>
           </div>
           <button
             onClick={handleAddToCart}

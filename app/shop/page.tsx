@@ -30,7 +30,7 @@ export default async function ShopPage({
     : products;
 
   return (
-    <main className="min-h-screen bg-brand-cream">
+    <main className="min-h-screen bg-white">
       {/* Hero banner */}
       <div className="relative bg-brand-green grain overflow-hidden">
         <div className="absolute inset-0">
@@ -52,7 +52,7 @@ export default async function ShopPage({
           </p>
         </div>
         {/* Bottom curve */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-brand-cream rounded-t-[2rem]" />
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-white rounded-t-[2rem]" />
       </div>
 
       {/* Content */}
@@ -60,14 +60,6 @@ export default async function ShopPage({
         <Suspense fallback={null}>
           <Filters categories={categories} />
         </Suspense>
-
-        {/* Results count */}
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-brand-black/40 text-sm">
-            {filtered.length} produit{filtered.length !== 1 ? "s" : ""}
-          </p>
-          <div className="w-20 h-px bg-gradient-to-r from-brand-gold/30 to-transparent" />
-        </div>
 
         <ProductGrid products={filtered} />
       </div>

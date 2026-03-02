@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
@@ -17,6 +17,12 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "belyzlash",
   description: "Mode & elegance",
@@ -30,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${inter.variable} ${playfair.variable} bg-brand-cream text-brand-black font-sans antialiased`}
+        className={`${inter.variable} ${playfair.variable} ${poppins.variable} bg-brand-cream text-brand-black font-sans antialiased`}
       >
         <AuthProvider>
           <CartProvider>

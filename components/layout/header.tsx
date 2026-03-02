@@ -45,13 +45,13 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         scrolled
-          ? "bg-brand-green/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
-          : "bg-brand-green/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none"
+          ? "bg-white shadow-[0_2px_20px_rgba(0,0,0,0.08)] lg:bg-brand-green/95 lg:backdrop-blur-xl lg:shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+          : "bg-white lg:bg-transparent lg:backdrop-blur-none"
       }`}
     >
-      {/* Top accent line */}
+      {/* Top accent line — desktop only */}
       <div
-        className={`w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent transition-opacity duration-500 ${
+        className={`hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent transition-opacity duration-500 ${
           scrolled ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -65,7 +65,7 @@ export function Header() {
         >
           {/* Left: burger */}
           <button
-            className="w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+            className="w-10 h-10 flex items-center justify-center text-brand-green/70 hover:text-brand-green transition-colors duration-300"
             onClick={() => setMenuOpen(true)}
             aria-label="Menu"
           >
@@ -77,7 +77,7 @@ export function Header() {
           {/* Center: logo */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image
-              src="/images/logo/Belyzlashlogo2-Blanc.png"
+              src="/images/logo/Belyzlash_logo_black.png"
               alt="BelyzLash"
               width={120}
               height={30}
@@ -91,7 +91,7 @@ export function Header() {
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Rechercher"
-              className="w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+              className="w-10 h-10 flex items-center justify-center text-brand-green/70 hover:text-brand-green transition-colors duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -100,7 +100,7 @@ export function Header() {
             <Link
               href="/cart"
               aria-label="Panier"
-              className="relative w-10 h-10 flex items-center justify-center text-brand-cream/70 hover:text-brand-cream transition-colors duration-300"
+              className="relative w-10 h-10 flex items-center justify-center text-brand-green/70 hover:text-brand-green transition-colors duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCart } from "./cart-provider";
@@ -137,6 +136,32 @@ export function CartDrawer() {
   const { items, totalItems, totalPrice, drawerOpen, closeDrawer } = useCart();
   const discounts = useDiscounts();
   const { lines, totalReduction, finalTotal } = calcDiscounts(totalPrice, discounts);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  async function handleCheckout() {
+    if (items.length === 0) return;
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            variantId: item.variantGid,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+      if (!res.ok) throw new Error("Erreur");
+      const data = await res.json();
+      window.location.href = data.checkoutUrl;
+    } catch {
+      setCheckoutError("Une erreur est survenue. Veuillez reessayer.");
+      setCheckoutLoading(false);
+    }
+  }
 
   const withThreshold = discounts.filter((d) => d.minimumAmount);
   const withoutThreshold = discounts.filter((d) => !d.minimumAmount && d.type !== "free_shipping");
@@ -266,17 +291,34 @@ export function CartDrawer() {
               )}
             </div>
 
+            {/* Checkout error */}
+            {checkoutError && (
+              <p className="text-red-500 text-xs text-center">{checkoutError}</p>
+            )}
+
             {/* Checkout button */}
-            <Link
-              href="/checkout"
-              onClick={closeDrawer}
-              className="w-full flex items-center justify-center gap-2 bg-brand-green text-brand-cream py-3.5 rounded-full text-[11px] tracking-[0.15em] uppercase font-bold hover:bg-brand-green/90 transition-all duration-300"
+            <button
+              onClick={handleCheckout}
+              disabled={checkoutLoading}
+              className="w-full flex items-center justify-center gap-2 bg-brand-green text-brand-cream py-3.5 rounded-full text-[11px] tracking-[0.15em] uppercase font-bold hover:bg-brand-green/90 transition-all duration-300 disabled:opacity-60"
             >
-              Valider ma commande
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </Link>
+              {checkoutLoading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Redirection...
+                </>
+              ) : (
+                <>
+                  Valider ma commande
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </>
+              )}
+            </button>
 
             {/* Trust */}
             <p className="text-center text-brand-black/30 text-[10px] tracking-wide">

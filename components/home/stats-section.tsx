@@ -49,7 +49,7 @@ export function StatsSection() {
               className={`text-center ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              <p className="font-serif text-4xl sm:text-5xl text-brand-cream mb-2">
+              <p className="font-serif text-2xl sm:text-5xl text-brand-cream mb-2">
                 <AnimatedNumber target={stat.value} suffix={stat.suffix} />
               </p>
               <p className="text-[11px] tracking-[0.2em] uppercase text-brand-cream/40">{stat.label}</p>

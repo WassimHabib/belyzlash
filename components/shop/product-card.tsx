@@ -24,9 +24,6 @@ export function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-green/70 via-brand-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
           {/* Sale badge */}
           {product.sale_price && (
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">

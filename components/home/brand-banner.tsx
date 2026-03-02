@@ -66,7 +66,7 @@ export function BrandBanner() {
           <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-6 font-bold">
             Notre Mission
           </p>
-          <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-green leading-tight max-w-3xl mx-auto mb-8 font-bold">
+          <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-green leading-tight max-w-3xl mx-auto mb-8 font-bold">
             L&apos;excellence au service de votre <span className="text-gradient-gold">passion</span>
           </h2>
           <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-gold to-transparent mx-auto" />
@@ -113,7 +113,7 @@ export function BrandBanner() {
                   }`}
                 >
                   <div className="flex items-center gap-5">
-                    <p className="font-serif text-4xl sm:text-5xl text-gradient-gold font-bold">
+                    <p className="font-serif text-2xl sm:text-5xl text-gradient-gold font-bold">
                       {stat.value}
                     </p>
                     <div className="w-px h-10 bg-brand-gold/20" />

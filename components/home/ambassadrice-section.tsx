@@ -75,7 +75,7 @@ export function AmbassadriceSection() {
                   <p className="text-brand-gold text-[10px] tracking-[0.4em] uppercase font-bold mb-4">
                     Programme exclusif
                   </p>
-                  <p className="font-serif text-4xl sm:text-5xl text-brand-cream font-bold leading-tight mb-4">
+                  <p className="font-serif text-2xl sm:text-5xl text-brand-cream font-bold leading-tight mb-4">
                     Devenez<br />
                     <span className="text-gradient-gold">Ambassadrice</span>
                   </p>
@@ -93,7 +93,7 @@ export function AmbassadriceSection() {
             <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 font-bold">
               Ambassadrices
             </p>
-            <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-green leading-tight font-bold mb-6">
+            <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-green leading-tight font-bold mb-6">
               Rejoignez la <span className="text-gradient-gold">famille</span>
             </h2>
             <p className="text-brand-black/40 leading-relaxed mb-10 max-w-md">

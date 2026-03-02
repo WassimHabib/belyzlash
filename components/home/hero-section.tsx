@@ -65,10 +65,10 @@ export function HeroSection() {
 
           {/* Title */}
           <h1 className={`font-serif leading-[0.9] mb-8 transition-all duration-1000 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <span className="block text-brand-cream text-6xl sm:text-8xl lg:text-9xl tracking-wide">
+            <span className="block text-brand-cream text-5xl sm:text-8xl lg:text-9xl tracking-wide">
               Belyz
             </span>
-            <span className="block text-gradient-gold text-7xl sm:text-[110px] lg:text-[140px] tracking-wide -mt-1">
+            <span className="block text-gradient-gold text-6xl sm:text-[110px] lg:text-[140px] tracking-wide -mt-1">
               Lash
             </span>
           </h1>

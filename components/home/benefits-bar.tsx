@@ -66,7 +66,7 @@ export function BenefitsBar() {
           <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 font-bold">
             Nos Engagements
           </p>
-          <h2 className="font-serif text-4xl sm:text-5xl text-brand-green font-bold">
+          <h2 className="font-serif text-2xl sm:text-5xl text-brand-green font-bold">
             Pourquoi nous faire <span className="text-gradient-gold">confiance</span>
           </h2>
         </div>

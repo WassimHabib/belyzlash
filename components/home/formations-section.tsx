@@ -27,7 +27,7 @@ export function FormationsSection() {
             <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 font-bold">
               Formations
             </p>
-            <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-cream mb-6 leading-tight font-bold">
+            <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-cream mb-6 leading-tight font-bold">
               BelyzLash<br />vous <span className="text-gradient-gold">forme</span>
             </h2>
             <p className="text-brand-cream/50 leading-relaxed mb-8 max-w-md">

@@ -57,7 +57,7 @@ export function Testimonials() {
           <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-4 font-bold">
             Temoignages
           </p>
-          <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-green mb-4 font-bold">
+          <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-green mb-4 font-bold">
             Elles nous font <span className="text-gradient-gold">confiance</span>
           </h2>
           <p className="text-brand-black/40 text-sm max-w-md mx-auto">

@@ -30,9 +30,6 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
             </div>
           )}
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-green/70 via-brand-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
           {/* Sale badge */}
           {product.sale_price && (
             <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10">
@@ -102,7 +99,7 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
             <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-3 font-bold">
               Nos Produits
             </p>
-            <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-green leading-tight font-bold">
+            <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-green leading-tight font-bold">
               Selection <span className="text-gradient-gold">Premium</span>
             </h2>
           </div>

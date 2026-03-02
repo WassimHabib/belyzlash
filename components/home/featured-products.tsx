@@ -3,9 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/types";
-import { useScrollAnimation } from "@/lib/use-scroll-animation";
 
-function FeaturedCard({ product, index }: { product: Product; index: number }) {
+function FeaturedCard({ product }: { product: Product }) {
   const image = product.images[0];
 
   return (
@@ -62,65 +61,29 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
 }
 
 export function FeaturedProducts({ products }: { products: Product[] }) {
-  const { ref, isVisible } = useScrollAnimation();
-
   return (
-    <section ref={ref} className="relative py-14 sm:py-20 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-white" />
-      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#EDF4F0] to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#EDF4F0] to-transparent" />
-
-      {/* Decorative */}
-      <div className="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full bg-brand-gold/[0.02] blur-[120px]" />
-      <div className="absolute -bottom-40 left-0 w-[400px] h-[400px] rounded-full bg-brand-green/[0.02] blur-[100px]" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className={`flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12 ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}>
-          <div>
-            <p className="text-brand-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-3 font-bold">
-              Nos Produits
-            </p>
-            <h2 className="font-serif text-3xl sm:text-6xl lg:text-7xl text-brand-green leading-tight font-bold">
-              Selection <span className="text-gradient-gold">Premium</span>
-            </h2>
-          </div>
-          <Link
-            href="/shop"
-            className="mt-6 sm:mt-0 inline-flex items-center gap-3 bg-brand-green text-brand-cream px-7 py-3.5 rounded-full text-[11px] tracking-[0.2em] uppercase font-semibold hover:bg-brand-green/90 hover:shadow-lg transition-all duration-500 group"
-          >
-            Tout voir
-            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </Link>
-        </div>
-
-        {/* Divider */}
-        <div className={`w-full h-px bg-gradient-to-r from-brand-gold/30 via-brand-beige to-transparent mb-10 ${isVisible ? "animate-line-grow" : "opacity-0"}`} />
+    <section className="bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
+        {/* Title */}
+        <h2 className="font-serif font-bold text-xl sm:text-3xl lg:text-4xl text-brand-green mb-6 sm:mb-10 text-center">
+          Nos Bestsellers
+        </h2>
 
         {/* Products grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-          {products.slice(0, 6).map((product, i) => (
-            <div
-              key={product.id}
-              className={isVisible ? "animate-fade-in-up" : "opacity-0"}
-              style={{ animationDelay: `${0.15 + i * 0.08}s` }}
-            >
-              <FeaturedCard product={product} index={i} />
-            </div>
+          {products.slice(0, 6).map((product) => (
+            <FeaturedCard key={product.id} product={product} />
           ))}
         </div>
 
-        {/* Bottom CTA mobile */}
-        <div className={`mt-10 text-center sm:hidden ${isVisible ? "animate-fade-in-up animation-delay-600" : "opacity-0"}`}>
+        {/* CTA */}
+        <div className="mt-8 sm:mt-12 text-center">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-3 bg-brand-green text-brand-cream px-8 py-4 rounded-full text-[11px] tracking-[0.2em] uppercase font-semibold"
+            className="inline-flex items-center gap-3 bg-brand-green text-brand-cream px-8 py-3.5 rounded-full text-[11px] tracking-[0.2em] uppercase font-semibold hover:bg-brand-green/90 hover:shadow-lg transition-all duration-500 group"
           >
             Voir tous les produits
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </Link>

@@ -22,8 +22,8 @@ export default async function Home() {
     <main>
       <HeroSection />
       <MarqueeBanner />
-      <BenefitsBar />
       <FeaturedProducts products={products} />
+      <BenefitsBar />
       <StatsSection />
       <BrandBanner />
       <Testimonials />

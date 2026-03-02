@@ -23,11 +23,11 @@ export default async function Home() {
       <HeroSection />
       <MarqueeBanner />
       <FeaturedProducts products={products} />
+      <FormationsSection />
       <AmbassadriceSection />
       <StatsSection />
       <BrandBanner />
       <Testimonials />
-      <FormationsSection />
       <BenefitsBar />
     </main>
   );

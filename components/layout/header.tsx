@@ -46,13 +46,13 @@ export function Header() {
     <header
       className={`fixed top-[28px] left-0 right-0 z-40 transition-all duration-500 ${
         scrolled
-          ? "bg-white shadow-[0_2px_20px_rgba(0,0,0,0.08)] lg:bg-brand-green/95 lg:backdrop-blur-xl lg:shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
-          : "bg-white lg:bg-transparent lg:backdrop-blur-none"
+          ? "bg-white shadow-[0_2px_20px_rgba(0,0,0,0.08)]"
+          : "bg-white"
       }`}
     >
       {/* Top accent line — desktop only */}
       <div
-        className={`hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent transition-opacity duration-500 ${
+        className={`hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-brand-green/10 to-transparent transition-opacity duration-500 ${
           scrolled ? "opacity-100" : "opacity-0"
         }`}
       />
@@ -118,17 +118,17 @@ export function Header() {
         {/* === DESKTOP HEADER (unchanged) === */}
         <div
           className={`hidden lg:flex items-center justify-between transition-all duration-500 ${
-            scrolled ? "h-16" : "h-20 sm:h-24"
+            scrolled ? "h-16" : "h-16"
           }`}
         >
           {/* Logo */}
           <Link href="/" className="relative flex-shrink-0">
             <Image
-              src="/images/logo/Belyzlashlogo2-Blanc.png"
+              src="/images/logo/Belyzlash_logo_black.png"
               alt="BelyzLash"
-              width={160}
-              height={40}
-              className={`transition-all duration-500 ${scrolled ? "h-10 sm:h-14 w-auto" : "h-12 sm:h-16 w-auto"}`}
+              width={120}
+              height={30}
+              className={`transition-all duration-500 ${scrolled ? "h-8 w-auto" : "h-10 w-auto"}`}
               priority
             />
           </Link>
@@ -139,7 +139,7 @@ export function Header() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative px-5 py-2 text-[11px] tracking-[0.2em] uppercase text-brand-cream/70 hover:text-brand-cream transition-all duration-300 group"
+                className="relative px-5 py-2 text-[11px] tracking-[0.2em] uppercase text-brand-green/60 hover:text-brand-green transition-all duration-300 group"
               >
                 {link.label}
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-5 h-px bg-brand-gold transition-all duration-300" />
@@ -153,7 +153,7 @@ export function Header() {
             <Link
               href={user ? "/account" : "/login"}
               aria-label="Mon compte"
-              className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
+              className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-green/60 hover:text-brand-green hover:bg-brand-green/[0.06] transition-all duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -167,7 +167,7 @@ export function Header() {
             <button
               onClick={openDrawer}
               aria-label="Panier"
-              className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
+              className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-green/60 hover:text-brand-green hover:bg-brand-green/[0.06] transition-all duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[18px] h-[18px]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />

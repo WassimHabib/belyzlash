@@ -29,6 +29,9 @@ interface CartContextType {
     quantity: number
   ) => void;
   clearCart: () => void;
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -37,6 +40,10 @@ const STORAGE_KEY = "belyzlash-cart";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   useEffect(() => {
     try {
@@ -64,6 +71,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, newItem];
     });
+    setDrawerOpen(true);
   }, []);
 
   const removeItem = useCallback(
@@ -116,6 +124,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         removeItem,
         updateQuantity,
         clearCart,
+        drawerOpen,
+        openDrawer,
+        closeDrawer,
       }}
     >
       {children}

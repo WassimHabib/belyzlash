@@ -1,31 +1,78 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useCart } from "./cart-provider";
-import { getFreeShippingPromo } from "@/lib/promotions";
+import type { ActiveDiscount } from "@/lib/shopify";
 
-function FreeShippingProgress({ totalPrice }: { totalPrice: number }) {
-  const promo = getFreeShippingPromo();
-  if (!promo || !promo.threshold) return null;
+function useDiscounts() {
+  const [discounts, setDiscounts] = useState<ActiveDiscount[]>([]);
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then((r) => r.json())
+      .then((d) => setDiscounts(d))
+      .catch(() => {});
+  }, []);
+  return discounts;
+}
 
-  const threshold = promo.threshold;
+function calcDiscounts(subtotal: number, discounts: ActiveDiscount[]) {
+  let totalReduction = 0;
+  const lines: { label: string; amount: number }[] = [];
+
+  for (const d of discounts) {
+    if (d.type === "free_shipping") continue;
+
+    const qualified = !d.minimumAmount || subtotal >= d.minimumAmount;
+    if (!qualified) continue;
+
+    if (d.type === "percentage" && d.value) {
+      const amount = subtotal * (d.value / 100);
+      lines.push({ label: d.title, amount });
+      totalReduction += amount;
+    } else if (d.type === "fixed" && d.value) {
+      lines.push({ label: d.title, amount: d.value });
+      totalReduction += d.value;
+    }
+  }
+
+  return { lines, totalReduction, finalTotal: Math.max(subtotal - totalReduction, 0) };
+}
+
+function PromoProgressBar({ discount, totalPrice }: { discount: ActiveDiscount; totalPrice: number }) {
+  const threshold = discount.minimumAmount;
+  if (!threshold) return null;
+
   const remaining = threshold - totalPrice;
   const progress = Math.min((totalPrice / threshold) * 100, 100);
   const qualified = remaining <= 0;
 
+  const icon = discount.type === "free_shipping" ? (
+    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+    </svg>
+  ) : (
+    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+    </svg>
+  );
+
   return (
-    <div className="mb-6">
+    <div>
       {qualified ? (
         <div className="flex items-center gap-2 text-brand-green">
           <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
-          <p className="text-xs font-semibold tracking-wide">Livraison offerte !</p>
+          <p className="text-xs font-semibold tracking-wide">{discount.title}</p>
         </div>
       ) : (
-        <p className="text-xs text-brand-black/50">
-          Plus que <span className="font-bold text-brand-gold">{remaining.toFixed(2)}&nbsp;&euro;</span> pour la livraison offerte
-        </p>
+        <div className="flex items-center gap-2">
+          {icon}
+          <p className="text-xs text-brand-black/50">
+            Plus que <span className="font-bold text-brand-green">{remaining.toFixed(2)}&nbsp;&euro;</span> pour : {discount.title}
+          </p>
+        </div>
       )}
       <div className="mt-2 h-1.5 rounded-full bg-brand-beige/60 overflow-hidden">
         <div
@@ -39,8 +86,85 @@ function FreeShippingProgress({ totalPrice }: { totalPrice: number }) {
   );
 }
 
+function PromoBadge({ discount }: { discount: ActiveDiscount }) {
+  return (
+    <div className="flex items-center gap-2 text-brand-green">
+      <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+      <p className="text-xs font-semibold tracking-wide">{discount.title}</p>
+    </div>
+  );
+}
+
+function SummaryContent({ totalPrice, totalItems, discounts }: { totalPrice: number; totalItems: number; discounts: ActiveDiscount[] }) {
+  const { lines, totalReduction, finalTotal } = calcDiscounts(totalPrice, discounts);
+
+  const freeShipping = discounts.find(
+    (d) => d.type === "free_shipping" && d.minimumAmount && totalPrice >= d.minimumAmount
+  );
+
+  const withThreshold = discounts.filter((d) => d.minimumAmount);
+  const withoutThreshold = discounts.filter((d) => !d.minimumAmount && d.type !== "free_shipping");
+
+  return (
+    <>
+      {/* Progress bars & badges */}
+      {discounts.length > 0 && (
+        <div className="mb-6 space-y-4">
+          {withoutThreshold.map((d, i) => (
+            <PromoBadge key={`badge-${i}`} discount={d} />
+          ))}
+          {withThreshold.map((d, i) => (
+            <PromoProgressBar key={`bar-${i}`} discount={d} totalPrice={totalPrice} />
+          ))}
+        </div>
+      )}
+
+      {/* Price lines */}
+      <div className="space-y-4 text-sm">
+        <div className="flex justify-between">
+          <span className="text-brand-black/50">Sous-total ({totalItems} article{totalItems !== 1 ? "s" : ""})</span>
+          <span className="text-brand-green font-medium">{totalPrice.toFixed(2)}&nbsp;&euro;</span>
+        </div>
+
+        {/* Discount lines */}
+        {lines.map((line, i) => (
+          <div key={i} className="flex justify-between">
+            <span className="text-brand-green/70 text-xs">{line.label}</span>
+            <span className="text-brand-green font-semibold text-xs">-{line.amount.toFixed(2)}&nbsp;&euro;</span>
+          </div>
+        ))}
+
+        <div className="flex justify-between">
+          <span className="text-brand-black/50">Livraison</span>
+          {freeShipping ? (
+            <span className="text-brand-green text-xs font-semibold">Offerte</span>
+          ) : (
+            <span className="text-brand-black/30 text-xs">Calcule a l&apos;etape suivante</span>
+          )}
+        </div>
+
+        <div className="w-full h-px bg-gradient-to-r from-brand-beige via-brand-beige/50 to-transparent" />
+
+        <div className="flex justify-between items-center pt-1">
+          <span className="text-brand-green font-semibold text-base">Total</span>
+          <div className="text-right">
+            {totalReduction > 0 && (
+              <p className="text-brand-black/25 line-through text-xs">{totalPrice.toFixed(2)}&nbsp;&euro;</p>
+            )}
+            <span className="text-xl font-bold text-gradient-gold">{finalTotal.toFixed(2)}&nbsp;&euro;</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function CartSummary() {
   const { totalPrice, totalItems } = useCart();
+  const discounts = useDiscounts();
+  const { finalTotal } = calcDiscounts(totalPrice, discounts);
 
   return (
     <>
@@ -49,29 +173,7 @@ export function CartSummary() {
         <div className="rounded-3xl border border-brand-beige/60 bg-white p-7 sm:p-8">
           <h2 className="font-serif text-xl text-brand-green mb-6">Resume de la commande</h2>
 
-          <FreeShippingProgress totalPrice={totalPrice} />
-
-          <div className="space-y-4 text-sm">
-            <div className="flex justify-between">
-              <span className="text-brand-black/50">Sous-total ({totalItems} article{totalItems !== 1 ? "s" : ""})</span>
-              <span className="text-brand-green font-medium">{totalPrice.toFixed(2)}&nbsp;&euro;</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-brand-black/50">Livraison</span>
-              {totalPrice >= (getFreeShippingPromo()?.threshold ?? Infinity) ? (
-                <span className="text-brand-green text-xs font-semibold">Offerte</span>
-              ) : (
-                <span className="text-brand-black/30 text-xs">Calcule a l&apos;etape suivante</span>
-              )}
-            </div>
-
-            <div className="w-full h-px bg-gradient-to-r from-brand-beige via-brand-beige/50 to-transparent" />
-
-            <div className="flex justify-between items-center pt-1">
-              <span className="text-brand-green font-semibold text-base">Total</span>
-              <span className="text-xl font-bold text-gradient-gold">{totalPrice.toFixed(2)}&nbsp;&euro;</span>
-            </div>
-          </div>
+          <SummaryContent totalPrice={totalPrice} totalItems={totalItems} discounts={discounts} />
 
           <Link
             href="/checkout"
@@ -104,23 +206,7 @@ export function CartSummary() {
       <div className="lg:hidden pb-28">
         <div className="rounded-3xl border border-brand-beige/60 bg-white p-6">
           <h2 className="font-serif text-lg text-brand-green mb-4">Resume</h2>
-
-          <FreeShippingProgress totalPrice={totalPrice} />
-
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-brand-black/50">Sous-total ({totalItems} article{totalItems !== 1 ? "s" : ""})</span>
-              <span className="text-brand-green font-medium">{totalPrice.toFixed(2)}&nbsp;&euro;</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-brand-black/50">Livraison</span>
-              {totalPrice >= (getFreeShippingPromo()?.threshold ?? Infinity) ? (
-                <span className="text-brand-green text-xs font-semibold">Offerte</span>
-              ) : (
-                <span className="text-brand-black/30 text-xs">Calcule apres</span>
-              )}
-            </div>
-          </div>
+          <SummaryContent totalPrice={totalPrice} totalItems={totalItems} discounts={discounts} />
         </div>
       </div>
 
@@ -129,7 +215,7 @@ export function CartSummary() {
         <div className="px-4 py-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-brand-black/40 text-[11px] tracking-wide">{totalItems} article{totalItems !== 1 ? "s" : ""}</p>
-            <p className="text-brand-gold font-bold text-xl">{totalPrice.toFixed(2)}&nbsp;&euro;</p>
+            <p className="text-brand-gold font-bold text-xl">{finalTotal.toFixed(2)}&nbsp;&euro;</p>
           </div>
           <Link
             href="/checkout"

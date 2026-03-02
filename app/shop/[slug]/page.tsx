@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProducts } from "@/lib/shopify";
+import { getProductBySlug, getProducts, getProductRecommendations } from "@/lib/shopify";
 import { mockProducts } from "@/lib/mock-data";
 import { ImageGallery } from "@/components/product/image-gallery";
 import { ProductInfo } from "@/components/product/product-info";
+import { RecommendedProducts } from "@/components/product/recommended-products";
 
 export async function generateStaticParams() {
   let products;
@@ -31,6 +32,20 @@ export default async function ProductPage({
 
   if (!product) notFound();
 
+  const productGid = (product as any).gid;
+  let recommended = productGid ? await getProductRecommendations(productGid) : [];
+  recommended = recommended.filter((p) => p.slug !== product.slug);
+
+  // Fallback: show other products if no recommendations
+  if (recommended.length === 0) {
+    try {
+      const allProducts = await getProducts({ per_page: 10 });
+      recommended = allProducts.filter((p) => p.slug !== product.slug).slice(0, 8);
+    } catch {
+      recommended = [];
+    }
+  }
+
   return (
     <main className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28">
@@ -44,10 +59,13 @@ export default async function ProductPage({
         </nav>
 
         {/* Product content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-start pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-start pb-10">
           <ImageGallery images={product.images} />
           <ProductInfo product={product} />
         </div>
+
+        {/* Recommended products */}
+        <RecommendedProducts products={recommended} />
       </div>
     </main>
   );

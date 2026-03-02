@@ -190,7 +190,56 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   `, { handle: slug });
 
   if (!data.productByHandle) return null;
-  return mapProduct(data.productByHandle);
+  const product = mapProduct(data.productByHandle);
+  (product as any).gid = data.productByHandle.id;
+  return product;
+}
+
+export async function getProductRecommendations(productId: string): Promise<Product[]> {
+  try {
+    const data = await shopifyFetch<any>(`
+      query GetRecommendations($productId: ID!) {
+        productRecommendations(productId: $productId) {
+          id
+          title
+          handle
+          description
+          descriptionHtml
+          availableForSale
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+          compareAtPriceRange {
+            minVariantPrice { amount currencyCode }
+          }
+          images(first: 5) {
+            edges {
+              node { url altText }
+            }
+          }
+          options {
+            name
+            values
+          }
+          variants(first: 30) {
+            edges {
+              node { id selectedOptions { name value } }
+            }
+          }
+          collections(first: 3) {
+            edges {
+              node { id title handle }
+            }
+          }
+        }
+      }
+    `, { productId });
+
+    return (data.productRecommendations ?? []).map((node: any) => mapProduct(node));
+  } catch (err) {
+    console.error("[SHOPIFY] Failed to fetch recommendations:", err);
+    return [];
+  }
 }
 
 export async function getCategories(): Promise<ProductCategory[]> {
@@ -672,6 +721,7 @@ export interface ActiveDiscount {
   title: string;
   type: "free_shipping" | "percentage" | "fixed";
   minimumAmount: number | null;
+  value: number | null;
 }
 
 export async function getActiveDiscounts(): Promise<ActiveDiscount[]> {
@@ -738,6 +788,7 @@ export async function getActiveDiscounts(): Promise<ActiveDiscount[]> {
           title: d.title,
           type: "free_shipping",
           minimumAmount: minAmount ? parseFloat(minAmount) : null,
+          value: null,
         });
       } else if (d.__typename === "DiscountAutomaticBasic" && d.customerGets?.value) {
         const val = d.customerGets.value;
@@ -745,6 +796,7 @@ export async function getActiveDiscounts(): Promise<ActiveDiscount[]> {
           title: d.title,
           type: val.percentage ? "percentage" : "fixed",
           minimumAmount: minAmount ? parseFloat(minAmount) : null,
+          value: val.percentage ? val.percentage * 100 : val.amount?.amount ? parseFloat(val.amount.amount) : null,
         });
       }
     }

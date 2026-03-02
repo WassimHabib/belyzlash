@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/cart-provider";
+// Cart icon opens drawer instead of navigating
 import { useAuth } from "@/components/auth/auth-provider";
 import { MobileMenu } from "./mobile-menu";
 
@@ -16,7 +17,7 @@ const navLinks = [
 ];
 
 export function Header() {
-  const { totalItems } = useCart();
+  const { totalItems, openDrawer } = useCart();
   const { user } = useAuth();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -97,8 +98,8 @@ export function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
             </button>
-            <Link
-              href="/cart"
+            <button
+              onClick={openDrawer}
               aria-label="Panier"
               className="relative w-10 h-10 flex items-center justify-center text-brand-green/70 hover:text-brand-green transition-colors duration-300"
             >
@@ -110,7 +111,7 @@ export function Header() {
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -163,8 +164,8 @@ export function Header() {
             </Link>
 
             {/* Cart */}
-            <Link
-              href="/cart"
+            <button
+              onClick={openDrawer}
               aria-label="Panier"
               className="relative w-10 h-10 rounded-full flex items-center justify-center text-brand-cream/70 hover:text-brand-cream hover:bg-white/[0.06] transition-all duration-300"
             >
@@ -176,7 +177,7 @@ export function Header() {
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </div>

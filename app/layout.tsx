@@ -38,9 +38,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} ${poppins.variable} bg-brand-cream text-brand-black font-sans antialiased`}
       >
+        <PromoBar />
         <AuthProvider>
           <CartProvider>
-            <PromoBar />
             <Header />
             {children}
             <Footer />

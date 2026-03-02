@@ -2,6 +2,7 @@ import { Product, ProductCategory, ShopifyCustomer, AuthUser, ShopifyOrder, Shop
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN!;
 const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+const adminToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 
 async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
   const res = await fetch(`https://${domain}/api/2025-10/graphql.json`, {
@@ -642,6 +643,117 @@ export async function customerDefaultAddressUpdate(
 
   const errors = data.customerDefaultAddressUpdate.customerUserErrors;
   if (errors?.length > 0) throw new Error(errors[0].message);
+}
+
+// ------- Admin API: Automatic Discounts -------
+
+async function shopifyAdminFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+  if (!adminToken) throw new Error("SHOPIFY_ADMIN_ACCESS_TOKEN not configured");
+
+  const res = await fetch(`https://${domain}/admin/api/2025-10/graphql.json`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Access-Token": adminToken,
+    },
+    body: JSON.stringify({ query, variables }),
+    next: { revalidate: 300 },
+  });
+
+  if (!res.ok) throw new Error(`Shopify Admin API error: ${res.status}`);
+
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0]?.message ?? "Shopify Admin GraphQL error");
+
+  return json.data;
+}
+
+export interface ActiveDiscount {
+  title: string;
+  type: "free_shipping" | "percentage" | "fixed";
+  minimumAmount: number | null;
+}
+
+export async function getActiveDiscounts(): Promise<ActiveDiscount[]> {
+  if (!adminToken) return [];
+
+  try {
+    const data = await shopifyAdminFetch<any>(`
+      query {
+        automaticDiscountNodes(first: 10) {
+          edges {
+            node {
+              id
+              automaticDiscount {
+                ... on DiscountAutomaticFreeShipping {
+                  __typename
+                  title
+                  status
+                  startsAt
+                  endsAt
+                  minimumRequirement {
+                    ... on DiscountMinimumSubtotal {
+                      greaterThanOrEqualToSubtotal { amount }
+                    }
+                  }
+                }
+                ... on DiscountAutomaticBasic {
+                  __typename
+                  title
+                  status
+                  startsAt
+                  endsAt
+                  minimumRequirement {
+                    ... on DiscountMinimumSubtotal {
+                      greaterThanOrEqualToSubtotal { amount }
+                    }
+                  }
+                  customerGets {
+                    value {
+                      ... on DiscountPercentage { percentage }
+                      ... on DiscountAmount { amount { amount } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `);
+
+    const now = new Date();
+    const discounts: ActiveDiscount[] = [];
+
+    for (const edge of data.automaticDiscountNodes.edges) {
+      const d = edge.node.automaticDiscount;
+      if (!d || d.status !== "ACTIVE") continue;
+      if (d.endsAt && new Date(d.endsAt) < now) continue;
+      if (d.startsAt && new Date(d.startsAt) > now) continue;
+
+      const minAmount = d.minimumRequirement?.greaterThanOrEqualToSubtotal?.amount;
+
+      if (d.__typename === "DiscountAutomaticFreeShipping") {
+        discounts.push({
+          title: d.title,
+          type: "free_shipping",
+          minimumAmount: minAmount ? parseFloat(minAmount) : null,
+        });
+      } else if (d.__typename === "DiscountAutomaticBasic" && d.customerGets?.value) {
+        const val = d.customerGets.value;
+        discounts.push({
+          title: d.title,
+          type: val.percentage ? "percentage" : "fixed",
+          minimumAmount: minAmount ? parseFloat(minAmount) : null,
+        });
+      }
+    }
+
+    return discounts;
+  } catch (err) {
+    console.error("[PROMO] Failed to fetch discounts:", err);
+    return [];
+  }
 }
 
 // ------- Customer Recover (forgot password) -------
